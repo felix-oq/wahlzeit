@@ -56,6 +56,11 @@ public class Photo extends DataObject {
 	public static final int MAX_PHOTO_HEIGHT = 600;
 	public static final int MAX_THUMB_PHOTO_WIDTH = 105;
 	public static final int MAX_THUMB_PHOTO_HEIGHT = 150;
+
+	/**
+	 * The location where the photo was taken.
+	 */
+	public Location location;
 	
 	/**
 	 * 
@@ -164,6 +169,33 @@ public class Photo extends DataObject {
 		creationTime = rset.getLong("creation_time");
 
 		maxPhotoSize = PhotoSize.getFromWidthHeight(width, height);
+
+		location = createLocationFrom(rset);
+	}
+
+	/**
+	 * Creates a location that is initialized with coordinate components from the provided result set
+	 * @param rset the result set to read the values from
+	 * @return a location instance with coordinate components from the provided result set or null if the location
+	 * is underspecified (iff any coordinate component delivers true for {@link Double#isNaN()})
+	 * @throws SQLException if the necessary values cannot be retrieved from the provided result set
+	 * @throws NullPointerException if the provided argument is null
+	 */
+	private static Location createLocationFrom(ResultSet rset) throws SQLException {
+		double coordinateComponentX = rset.getDouble("coordinate_x");
+		double coordinateComponentY = rset.getDouble("coordinate_y");
+		double coordinateComponentZ = rset.getDouble("coordinate_z");
+
+		if (Double.isNaN(coordinateComponentX)
+				|| Double.isNaN(coordinateComponentY)
+				|| Double.isNaN(coordinateComponentZ)) {
+			// the location in the result set is underspecified, so return null
+			return null;
+		}
+
+		Coordinate coordinate = new Coordinate(coordinateComponentX, coordinateComponentY, coordinateComponentZ);
+
+		return new Location(coordinate);
 	}
 	
 	/**
@@ -183,7 +215,29 @@ public class Photo extends DataObject {
 		rset.updateInt("status", status.asInt());
 		rset.updateInt("praise_sum", praiseSum);
 		rset.updateInt("no_votes", noVotes);
-		rset.updateLong("creation_time", creationTime);		
+		rset.updateLong("creation_time", creationTime);
+
+		writeLocationOn(rset, location);
+	}
+
+	/**
+	 * Writes the contents of a location on the provided result set.
+	 * @param rset the result set to write the values on
+	 * @throws SQLException if the necessary values cannot be written on the provided result set
+	 * @throws NullPointerException if any of the arguments is null
+	 */
+	private static void writeLocationOn(ResultSet rset, Location location) throws SQLException {
+		Coordinate coordinate = location.coordinate;
+		if (coordinate == null) {
+			// there is no coordinate for this photo, so enter NaN as coordinate components
+			rset.updateDouble("coordinate_x", Double.NaN);
+			rset.updateDouble("coordinate_y", Double.NaN);
+			rset.updateDouble("coordinate_z", Double.NaN);
+		} else {
+			rset.updateDouble("coordinate_x", coordinate.getX());
+			rset.updateDouble("coordinate_y", coordinate.getY());
+			rset.updateDouble("coordinate_z", coordinate.getZ());
+		}
 	}
 
 	/**
