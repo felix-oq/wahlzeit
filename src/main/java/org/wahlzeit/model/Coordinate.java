@@ -1,5 +1,8 @@
 package org.wahlzeit.model;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 /**
  * This class represents a point in a three dimensional space.
  */
@@ -30,6 +33,31 @@ public class Coordinate {
         this.x = x;
         this.y = y;
         this.z = z;
+    }
+
+    /**
+     * Creates a coordinate instance by reading the x-, y- and z-components from the provided result set.
+     * @param rset the result set to read the components from
+     * @throws SQLException if the necessary values cannot be retrieved from the provided result set
+     * @throws NullPointerException if the provided argument is null
+     * @methodtype constructor
+     */
+    public Coordinate(ResultSet rset) throws SQLException {
+        this(rset.getDouble("coordinate_x"),
+                rset.getDouble("coordinate_y"),
+                rset.getDouble("coordinate_z"));
+    }
+
+    /**
+     * Writes the contents of this coordinate on the provided result set.
+     * @param rset the result set to write the values on
+     * @throws SQLException if the necessary values cannot be written on the provided result set
+     * @throws NullPointerException if the argument is null
+     */
+    public void writeOn(ResultSet rset) throws SQLException {
+        rset.updateDouble("coordinate_x", getX());
+        rset.updateDouble("coordinate_y", getY());
+        rset.updateDouble("coordinate_z", getZ());
     }
 
     /**
