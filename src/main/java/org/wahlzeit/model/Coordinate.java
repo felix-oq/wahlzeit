@@ -2,6 +2,7 @@ package org.wahlzeit.model;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Objects;
 
 /**
  * This class represents a point in a three dimensional space.
@@ -11,6 +12,11 @@ public class Coordinate {
     private double x;
     private double y;
     private double z;
+
+    /**
+     * The number of decimal places for x,y,z that are considered, when two coordinates are checked to be equal or not.
+     */
+    private static final int DECIMAL_PLACES_FOR_EQUALITY = 3;
 
     /**
      * Creates a default coordinate instance where its x-, y- and z-components are initialized with zero.
@@ -78,16 +84,25 @@ public class Coordinate {
 
     /**
      * Checks if this coordinate is equal to the given one. They are considered equal iff their x-, y- and z-components
-     * are equal.
+     * are equal when rounded up to their third decimal place.
      * @param otherCoordinate the other coordinate which is checked to be equal
-     * @return true if they are equal, false otherwise
+     * @return true if they are considered equal, false otherwise
      */
     public boolean isEqual(Coordinate otherCoordinate) {
         if (otherCoordinate == null) return false;
 
-        return getX() == otherCoordinate.getX()
-                && this.getY() == otherCoordinate.getY()
-                && this.getZ() == otherCoordinate.getZ();
+        double roundedX = roundToDecimalPlaces(getX(), DECIMAL_PLACES_FOR_EQUALITY);
+        double otherRoundedX = roundToDecimalPlaces(otherCoordinate.getX(), DECIMAL_PLACES_FOR_EQUALITY);
+
+        double roundedY = roundToDecimalPlaces(getY(), DECIMAL_PLACES_FOR_EQUALITY);
+        double otherRoundedY = roundToDecimalPlaces(otherCoordinate.getY(), DECIMAL_PLACES_FOR_EQUALITY);
+
+        double roundedZ = roundToDecimalPlaces(getZ(), DECIMAL_PLACES_FOR_EQUALITY);
+        double otherRoundedZ = roundToDecimalPlaces(otherCoordinate.getZ(), DECIMAL_PLACES_FOR_EQUALITY);
+
+        return roundedX == otherRoundedX &&
+                roundedY == otherRoundedY &&
+                roundedZ == otherRoundedZ;
     }
 
     @Override
@@ -97,6 +112,20 @@ public class Coordinate {
         } else {
             return false;
         }
+    }
+
+    private double roundToDecimalPlaces(double toRound, int decimalPlaces) {
+        double shiftingFactor = Math.pow(10, decimalPlaces);
+        return Math.round(toRound * shiftingFactor) / shiftingFactor;
+    }
+
+    @Override
+    public int hashCode() {
+        // use the rounded coordinates for hash computation, otherwise objects that are equal would not have the same
+        // hash code
+        return Objects.hash(roundToDecimalPlaces(getX(), DECIMAL_PLACES_FOR_EQUALITY),
+                roundToDecimalPlaces(getY(), DECIMAL_PLACES_FOR_EQUALITY),
+                roundToDecimalPlaces(getZ(), DECIMAL_PLACES_FOR_EQUALITY));
     }
 
     public double getX() {
