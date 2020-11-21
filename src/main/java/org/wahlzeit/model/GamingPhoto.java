@@ -29,13 +29,18 @@ public class GamingPhoto extends Photo {
 
     public GamingPhoto(ResultSet rset) throws SQLException {
         super(rset);
-        this.videoGame = new VideoGame(rset);
     }
 
     @Override
     public void writeOn(ResultSet rset) throws SQLException {
         super.writeOn(rset);
         videoGame.writeOn(rset);
+    }
+
+    @Override
+    public void readFrom(ResultSet rset) throws SQLException {
+        super.readFrom(rset);
+        videoGame = new VideoGame(rset);
     }
 
 }
