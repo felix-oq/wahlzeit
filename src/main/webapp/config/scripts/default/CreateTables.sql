@@ -32,7 +32,10 @@ CREATE TABLE photos (
 	creation_time bigint,
 	coordinate_x double precision,
 	coordinate_y double precision,
-	coordinate_z double precision
+	coordinate_z double precision,
+	game_title text,
+	game_genre text,
+	game_release date
 );
 
 CREATE TABLE tags (
