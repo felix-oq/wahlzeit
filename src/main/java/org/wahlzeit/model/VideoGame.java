@@ -43,7 +43,7 @@ public class VideoGame {
     public VideoGame(ResultSet rset) throws SQLException {
         this.title = rset.getString("game_title");
         String genreString = rset.getString("game_genre");
-        this.genre = (genreString == null) ? null : VideoGameGenre.valueOf(rset.getString("game_genre"));
+        this.genre = (genreString == null) ? null : VideoGameGenre.valueOf(genreString);
         this.release = rset.getDate("game_release");
     }
 
