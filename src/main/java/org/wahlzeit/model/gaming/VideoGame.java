@@ -3,6 +3,7 @@ package org.wahlzeit.model.gaming;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Date;
+import java.util.Objects;
 
 /**
  * This class represents a specific video game and provides various data about it.
@@ -57,6 +58,21 @@ public class VideoGame {
         rset.updateString(title, "game_title");
         rset.updateString(genre.name(), "game_genre");
         rset.updateDate("game_release", release);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        VideoGame videoGame = (VideoGame) o;
+        return Objects.equals(title, videoGame.title) &&
+                genre == videoGame.genre &&
+                Objects.equals(release, videoGame.release);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(title, genre, release);
     }
 
     public String getTitle() {
