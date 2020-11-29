@@ -22,6 +22,7 @@ package org.wahlzeit.model;
 
 import java.sql.*;
 
+import org.wahlzeit.model.gaming.GamingPhotoFactory;
 import org.wahlzeit.services.*;
 
 /**

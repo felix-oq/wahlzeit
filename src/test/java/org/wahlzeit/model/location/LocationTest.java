@@ -1,6 +1,8 @@
-package org.wahlzeit.model;
+package org.wahlzeit.model.location;
 
 import org.junit.Test;
+import org.wahlzeit.model.location.Coordinate;
+import org.wahlzeit.model.location.Location;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

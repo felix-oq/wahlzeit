@@ -1,4 +1,4 @@
-package org.wahlzeit.model;
+package org.wahlzeit.model.gaming;
 
 /**
  * An enumeration of possible genres that video games can be assigned to.

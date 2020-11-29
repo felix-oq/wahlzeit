@@ -1,6 +1,8 @@
 package org.wahlzeit.model;
 
 import org.junit.Test;
+import org.wahlzeit.model.location.Coordinate;
+import org.wahlzeit.model.location.Location;
 import org.wahlzeit.services.EmailAddress;
 import org.wahlzeit.services.Language;
 import org.wahlzeit.utils.StringUtil;

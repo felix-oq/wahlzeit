@@ -1,4 +1,7 @@
-package org.wahlzeit.model;
+package org.wahlzeit.model.gaming;
+
+import org.wahlzeit.model.Photo;
+import org.wahlzeit.model.PhotoId;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

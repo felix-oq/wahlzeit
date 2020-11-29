@@ -1,4 +1,4 @@
-package org.wahlzeit.model;
+package org.wahlzeit.model.gaming;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

@@ -25,6 +25,7 @@ import java.sql.*;
 import java.util.*;
 
 import org.wahlzeit.main.*;
+import org.wahlzeit.model.gaming.GamingPhotoManager;
 import org.wahlzeit.services.*;
 
 /**
