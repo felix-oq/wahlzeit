@@ -30,9 +30,10 @@ CREATE TABLE photos (
 	praise_sum integer,
 	no_votes integer,
 	creation_time bigint,
-	coordinate_x double precision,
-	coordinate_y double precision,
-	coordinate_z double precision,
+	coordinate_type integer,
+	coordinate_1 double precision,
+	coordinate_2 double precision,
+	coordinate_3 double precision,
 	game_title text,
 	game_genre text,
 	game_release date

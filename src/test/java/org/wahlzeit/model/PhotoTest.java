@@ -1,7 +1,8 @@
 package org.wahlzeit.model;
 
 import org.junit.Test;
-import org.wahlzeit.model.location.Coordinate;
+import org.wahlzeit.model.location.CartesianCoordinate;
+import org.wahlzeit.model.location.CoordinateType;
 import org.wahlzeit.model.location.Location;
 import org.wahlzeit.services.EmailAddress;
 import org.wahlzeit.services.Language;
@@ -11,6 +12,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
@@ -55,9 +57,10 @@ public class PhotoTest {
         when(resultSetMock.getInt("praise_sum")).thenReturn(praiseSum);
         when(resultSetMock.getInt("no_votes")).thenReturn(noVotes);
         when(resultSetMock.getLong("creation_time")).thenReturn(creationTime);
-        when(resultSetMock.getDouble("coordinate_x")).thenReturn(coordinateX);
-        when(resultSetMock.getDouble("coordinate_y")).thenReturn(coordinateY);
-        when(resultSetMock.getDouble("coordinate_z")).thenReturn(coordinateZ);
+        when(resultSetMock.getInt("coordinate_type")).thenReturn(CoordinateType.Cartesian.ordinal());
+        when(resultSetMock.getDouble("coordinate_1")).thenReturn(coordinateX);
+        when(resultSetMock.getDouble("coordinate_2")).thenReturn(coordinateY);
+        when(resultSetMock.getDouble("coordinate_3")).thenReturn(coordinateZ);
 
         Photo photo = new Photo();
 
@@ -79,9 +82,13 @@ public class PhotoTest {
         assertEquals(praiseSum, photo.praiseSum);
         assertEquals(noVotes, photo.noVotes);
         assertEquals(creationTime, photo.getCreationTime());
-        assertEquals(coordinateX, photo.location.coordinate.getX(), 0.0);
-        assertEquals(coordinateY, photo.location.coordinate.getY(), 0.0);
-        assertEquals(coordinateZ, photo.location.coordinate.getZ(), 0.0);
+
+        assertTrue(photo.location.coordinate instanceof CartesianCoordinate);
+        CartesianCoordinate cartesianCoordinate = (CartesianCoordinate) photo.location.coordinate;
+
+        assertEquals(coordinateX, cartesianCoordinate.getX(), 0.0);
+        assertEquals(coordinateY, cartesianCoordinate.getY(), 0.0);
+        assertEquals(coordinateZ, cartesianCoordinate.getZ(), 0.0);
     }
 
     @Test(expected = SQLException.class)
@@ -134,7 +141,7 @@ public class PhotoTest {
         photo.praiseSum = praiseSum;
         photo.noVotes = noVotes;
         photo.creationTime = creationTime;
-        Coordinate coordinate = new Coordinate(coordinateX, coordinateY, coordinateZ);
+        CartesianCoordinate coordinate = new CartesianCoordinate(coordinateX, coordinateY, coordinateZ);
         photo.location = new Location(coordinate);
 
         ResultSet mockedResultSet = mock(ResultSet.class);
@@ -157,9 +164,10 @@ public class PhotoTest {
         verify(mockedResultSet, times(1)).updateInt("praise_sum", praiseSum);
         verify(mockedResultSet, times(1)).updateInt("no_votes", noVotes);
         verify(mockedResultSet, times(1)).updateLong("creation_time", creationTime);
-        verify(mockedResultSet, times(1)).updateDouble("coordinate_x", coordinateX);
-        verify(mockedResultSet, times(1)).updateDouble("coordinate_y", coordinateY);
-        verify(mockedResultSet, times(1)).updateDouble("coordinate_z", coordinateZ);
+        verify(mockedResultSet, times(1)).updateInt("coordinate_type", CoordinateType.Cartesian.ordinal());
+        verify(mockedResultSet, times(1)).updateDouble("coordinate_1", coordinateX);
+        verify(mockedResultSet, times(1)).updateDouble("coordinate_2", coordinateY);
+        verify(mockedResultSet, times(1)).updateDouble("coordinate_3", coordinateZ);
         verifyNoMoreInteractions(mockedResultSet);
     }
 

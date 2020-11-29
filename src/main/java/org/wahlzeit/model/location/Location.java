@@ -11,11 +11,12 @@ public class Location {
     public Coordinate coordinate;
 
     /**
-     * Creates a default location instance where its coordinate are initialized with zeros.
+     * Creates a default location instance where its coordinate is chosen to be cartesian and its are initialized with
+     * zeros.
      * @methodtype constructor
      */
     public Location() {
-        this.coordinate = new Coordinate();
+        this.coordinate = new CartesianCoordinate();
     }
 
     /**
@@ -32,10 +33,30 @@ public class Location {
      * @param rset the result set to read the necessary data from
      * @throws SQLException if the necessary values cannot be retrieved from the provided result set
      * @throws NullPointerException if the provided argument is null
+     * @throws IndexOutOfBoundsException if the ordinal number of the coordinate type in the result set is out of bounds
      * @methodtype constructor
      */
     public Location(ResultSet rset) throws SQLException {
-        this(new Coordinate(rset));
+        int coordinateTypeOrdinalNumber = rset.getInt("coordinate_type");
+        CoordinateType coordinateType = CoordinateType.values()[coordinateTypeOrdinalNumber];
+
+        this.coordinate = readCoordinate(rset, coordinateType);
+    }
+
+    private Coordinate readCoordinate(ResultSet rset, CoordinateType coordinateType) throws SQLException {
+        // could be handled by an own factory class in the future
+        switch(coordinateType) {
+            case Cartesian: {
+                return new CartesianCoordinate(rset);
+            }
+            case Spheric: {
+                return new SphericCoordinate(rset);
+            }
+            default: {
+                // should not happen if the cases above are complete
+                throw new RuntimeException("Encountered an unhandled CoordinateType: " + coordinateType.name());
+            }
+        }
     }
 
     /**
