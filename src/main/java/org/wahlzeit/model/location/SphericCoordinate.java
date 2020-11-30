@@ -86,8 +86,12 @@ public class SphericCoordinate implements Coordinate {
 
     @Override
     public double getCentralAngle(Coordinate otherCoordinate) {
-        // TODO
-        throw new NullPointerException();
+        SphericCoordinate otherSphericCoordinate = otherCoordinate.asSphericCoordinate();
+
+        double deltaLongitude = Math.abs(getPhi() - otherSphericCoordinate.getPhi());
+
+        return Math.acos(Math.sin(getTheta()) * Math.sin(otherSphericCoordinate.getTheta())
+                + Math.cos(getTheta()) * Math.cos(otherSphericCoordinate.getTheta()) * Math.cos(deltaLongitude));
     }
 
     @Override

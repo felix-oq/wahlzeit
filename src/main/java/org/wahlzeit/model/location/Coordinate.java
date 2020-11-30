@@ -39,9 +39,9 @@ public interface Coordinate {
     SphericCoordinate asSphericCoordinate();
 
     /**
-     * Computes the central angle between this coordinate and the entered one.
+     * Computes the central angle in radians between this coordinate and the entered one.
      * @param otherCoordinate the other coordinate to which the central angle is computed
-     * @return the central angle between the two coordinates
+     * @return the central angle between the two coordinates in radians
      * @throws NullPointerException if the given argument is null
      */
     double getCentralAngle(Coordinate otherCoordinate);

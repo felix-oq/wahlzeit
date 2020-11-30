@@ -189,7 +189,18 @@ public class CartesianCoordinateTest {
 
     @Test
     public void testGetCentralAngle() {
-        // TODO
+        // given
+        CartesianCoordinate firstCoordinate = new CartesianCoordinate(1,0.5,1);
+        CartesianCoordinate secondCoordinate = new CartesianCoordinate(1, -2, -1);
+
+        // when
+        double centralAngleFirstToSecond = firstCoordinate.getCentralAngle(secondCoordinate);
+        double centralAngleSecondToFirst = secondCoordinate.getCentralAngle(firstCoordinate);
+
+
+        // then
+        assertEquals(centralAngleFirstToSecond, centralAngleSecondToFirst, 0.0);
+        assertEquals(0.8224691545143, centralAngleFirstToSecond, 1e-12);
     }
 
     @Test(expected = NullPointerException.class)

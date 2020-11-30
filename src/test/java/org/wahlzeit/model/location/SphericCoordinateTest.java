@@ -190,7 +190,18 @@ public class SphericCoordinateTest {
 
     @Test
     public void testGetCentralAngle() {
-        // TODO
+        // given
+        SphericCoordinate firstCoordinate = new SphericCoordinate(Math.PI/4, Math.PI / 2, 42);
+        SphericCoordinate secondCoordinate = new SphericCoordinate(-3 * Math.PI/4, 0, 24);
+
+        // when
+        double centralAngleFirstToSecond = firstCoordinate.getCentralAngle(secondCoordinate);
+        double centralAngleSecondToFirst = secondCoordinate.getCentralAngle(firstCoordinate);
+
+
+        // then
+        assertEquals(centralAngleFirstToSecond, centralAngleSecondToFirst, 0.0);
+        assertEquals(Math.PI / 2, centralAngleFirstToSecond, 1e-12);
     }
 
     @Test(expected = NullPointerException.class)
