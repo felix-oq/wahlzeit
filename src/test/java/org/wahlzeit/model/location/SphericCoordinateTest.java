@@ -153,30 +153,6 @@ public class SphericCoordinateTest {
     }
 
     @Test
-    public void testGetCartesianDistance() {
-        // given
-        SphericCoordinate firstCoordinate = new SphericCoordinate(-0.562, 101.35, -121.421);
-        SphericCoordinate secondCoordinate = new SphericCoordinate(0.438, -14.1343542, -5.0);
-
-        // when
-        double distanceFirstToSecond = firstCoordinate.getCartesianDistance(secondCoordinate);
-        double distanceSecondToFirst = secondCoordinate.getCartesianDistance(firstCoordinate);
-
-        // then
-        assertEquals(distanceFirstToSecond, distanceSecondToFirst, 0.0);
-        assertEquals(123.4704585789818, distanceFirstToSecond, 1e-12);
-    }
-
-    @Test(expected = NullPointerException.class)
-    public void testGetCartesianDistanceThrowsNullPointerException() {
-        // given
-        Coordinate coordinate = new SphericCoordinate();
-
-        // when
-        coordinate.getCartesianDistance(null);
-    }
-
-    @Test
     public void testAsSphericCoordinate() {
         // given
         SphericCoordinate coordinate = new SphericCoordinate();
@@ -189,39 +165,14 @@ public class SphericCoordinateTest {
     }
 
     @Test
-    public void testGetCentralAngle() {
-        // given
-        SphericCoordinate firstCoordinate = new SphericCoordinate(Math.PI/4, Math.PI / 2, 42);
-        SphericCoordinate secondCoordinate = new SphericCoordinate(-3 * Math.PI/4, 0, 24);
-
-        // when
-        double centralAngleFirstToSecond = firstCoordinate.getCentralAngle(secondCoordinate);
-        double centralAngleSecondToFirst = secondCoordinate.getCentralAngle(firstCoordinate);
-
-
-        // then
-        assertEquals(centralAngleFirstToSecond, centralAngleSecondToFirst, 0.0);
-        assertEquals(Math.PI / 2, centralAngleFirstToSecond, 1e-12);
-    }
-
-    @Test(expected = NullPointerException.class)
-    public void testGetCentralAngleThrowsNullPointerException() {
-        // given
-        SphericCoordinate coordinate = new SphericCoordinate();
-
-        // when
-        coordinate.getCentralAngle(null);
-    }
-
-    @Test
     public void testExactEquality() {
         // given
         SphericCoordinate firstCoordinate = new CartesianCoordinate(7.654321, 8.7654321, 9.87654321).asSphericCoordinate();
         SphericCoordinate secondCoordinate = new CartesianCoordinate(7.654321, 8.7654321, 9.87654321).asSphericCoordinate();
 
         // then
-        assertTrue(firstCoordinate.isEqual(secondCoordinate));
         assertEquals(firstCoordinate, secondCoordinate);
+        assertEquals(secondCoordinate, firstCoordinate);
 
         // equal coordinates have to deliver the same hash code
         assertEquals(firstCoordinate.hashCode(), secondCoordinate.hashCode());
@@ -234,8 +185,8 @@ public class SphericCoordinateTest {
         SphericCoordinate secondCoordinate = new CartesianCoordinate(7.6536, 8.7647, 9.8774).asSphericCoordinate();
 
         // then
-        assertTrue(firstCoordinate.isEqual(secondCoordinate));
         assertEquals(firstCoordinate, secondCoordinate);
+        assertEquals(secondCoordinate, firstCoordinate);
 
         // equal coordinates have to deliver the same hash code
         assertEquals(firstCoordinate.hashCode(), secondCoordinate.hashCode());
@@ -248,8 +199,8 @@ public class SphericCoordinateTest {
         SphericCoordinate secondCoordinate = new CartesianCoordinate(7.654321, 8.7654321, 9.87654321).asSphericCoordinate();
 
         // then
-        assertFalse(firstCoordinate.isEqual(secondCoordinate));
         assertNotEquals(firstCoordinate, secondCoordinate);
+        assertNotEquals(secondCoordinate, firstCoordinate);
     }
 
     @Test
@@ -259,8 +210,8 @@ public class SphericCoordinateTest {
         SphericCoordinate secondCoordinate = new CartesianCoordinate(7.6534, 8.7656, 9.8775).asSphericCoordinate();
 
         // then
-        assertFalse(firstCoordinate.isEqual(secondCoordinate));
         assertNotEquals(firstCoordinate, secondCoordinate);
+        assertNotEquals(secondCoordinate, firstCoordinate);
     }
 
     @Test
@@ -270,7 +221,7 @@ public class SphericCoordinateTest {
         Object object = new Object();
 
         // then
-        assertNotEquals(firstCoordinate, object);
+        assertNotEquals(object, firstCoordinate);
     }
 
     @Test
@@ -281,7 +232,10 @@ public class SphericCoordinateTest {
 
         // then
         assertTrue(sphericCoordinate.isEqual(cartesianCoordinate));
+        assertTrue(cartesianCoordinate.isEqual(sphericCoordinate));
+
         assertEquals(sphericCoordinate, cartesianCoordinate);
+        assertEquals(cartesianCoordinate, sphericCoordinate);
 
         // equal coordinates have to deliver the same hash code
         assertEquals(sphericCoordinate.hashCode(), cartesianCoordinate.hashCode());

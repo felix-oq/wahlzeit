@@ -152,7 +152,7 @@ public class LocationTest {
     public void testWriteOn() throws SQLException {
         // given
         ResultSet mockedResultSet = mock(ResultSet.class);
-        CartesianCoordinate mockedCoordinate = mock(CartesianCoordinate.class);
+        Coordinate mockedCoordinate = mock(Coordinate.class);
 
         Location location = new Location(mockedCoordinate);
 
@@ -178,7 +178,7 @@ public class LocationTest {
         // given
         ResultSet mockedResultSet = mock(ResultSet.class);
 
-        CartesianCoordinate mockedCoordinate = mock(CartesianCoordinate.class);
+        Coordinate mockedCoordinate = mock(Coordinate.class);
         doThrow(new SQLException()).when(mockedCoordinate).writeOn(mockedResultSet);
 
         Location location = new Location(mockedCoordinate);

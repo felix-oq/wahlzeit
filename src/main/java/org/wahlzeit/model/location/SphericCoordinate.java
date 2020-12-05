@@ -6,7 +6,7 @@ import java.sql.SQLException;
 /**
  * This class represents a point in a three dimensional space using spheric coordinates.
  */
-public class SphericCoordinate implements Coordinate {
+public class SphericCoordinate extends AbstractCoordinate {
 
     private double phi;
     private double theta;
@@ -52,7 +52,7 @@ public class SphericCoordinate implements Coordinate {
 
     @Override
     public void writeOn(ResultSet rset) throws SQLException {
-        rset.updateInt("coordinate_type", getType().ordinal());
+        super.writeOn(rset);
 
         rset.updateDouble("coordinate_1", getPhi());
         rset.updateDouble("coordinate_2", getTheta());
@@ -74,42 +74,8 @@ public class SphericCoordinate implements Coordinate {
     }
 
     @Override
-    public double getCartesianDistance(Coordinate otherCoordinate) {
-        CartesianCoordinate thisCartesianCoordinate = this.asCartesianCoordinate();
-        return thisCartesianCoordinate.getCartesianDistance(otherCoordinate);
-    }
-
-    @Override
     public SphericCoordinate asSphericCoordinate() {
         return this;
-    }
-
-    @Override
-    public double getCentralAngle(Coordinate otherCoordinate) {
-        SphericCoordinate otherSphericCoordinate = otherCoordinate.asSphericCoordinate();
-
-        double deltaLongitude = Math.abs(getPhi() - otherSphericCoordinate.getPhi());
-
-        return Math.acos(Math.sin(getTheta()) * Math.sin(otherSphericCoordinate.getTheta())
-                + Math.cos(getTheta()) * Math.cos(otherSphericCoordinate.getTheta()) * Math.cos(deltaLongitude));
-    }
-
-    @Override
-    public boolean isEqual(Coordinate otherCoordinate) {
-        CartesianCoordinate thisCartesianCoordinate = this.asCartesianCoordinate();
-        return thisCartesianCoordinate.isEqual(otherCoordinate);
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        CartesianCoordinate thisCartesianCoordinate = this.asCartesianCoordinate();
-        return thisCartesianCoordinate.equals(object);
-    }
-
-    @Override
-    public int hashCode() {
-        CartesianCoordinate thisCartesianCoordinate = this.asCartesianCoordinate();
-        return thisCartesianCoordinate.hashCode();
     }
 
     public double getPhi() {
