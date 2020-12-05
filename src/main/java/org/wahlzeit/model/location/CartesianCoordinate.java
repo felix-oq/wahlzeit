@@ -74,7 +74,12 @@ public class CartesianCoordinate extends AbstractCoordinate {
         double phi = Math.atan(getY() / getX());
         double theta = Math.acos(getZ() / radius);
 
-        return new SphericCoordinate(phi, theta, radius);
+        // check if a division by zero occurred
+        if (Double.isFinite(phi) && Double.isFinite(theta)) {
+            return new SphericCoordinate(phi, theta, radius);
+        } else {
+            return new SphericCoordinate();
+        }
     }
 
     public double getX() {

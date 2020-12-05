@@ -164,6 +164,20 @@ public class CartesianCoordinateTest {
     }
 
     @Test
+    public void testAsSphericCoordinatePreventsDivisionByZero() {
+        // given
+        CartesianCoordinate cartesianCoordinate = new CartesianCoordinate(0, 0, 0);
+
+        // when
+        SphericCoordinate sphericCoordinate = cartesianCoordinate.asSphericCoordinate();
+
+        // then
+        assertTrue(Double.isFinite(sphericCoordinate.getPhi()));
+        assertTrue(Double.isFinite(sphericCoordinate.getTheta()));
+        assertEquals(0, sphericCoordinate.getRadius(), 0.0);
+    }
+
+    @Test
     public void testExactEquality() {
         // given
         CartesianCoordinate firstCoordinate = new CartesianCoordinate(7.654321, 8.7654321, 9.87654321);
