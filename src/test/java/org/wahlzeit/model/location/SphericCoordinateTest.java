@@ -3,6 +3,7 @@ package org.wahlzeit.model.location;
 import org.junit.Test;
 
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 
 import static org.junit.Assert.*;
@@ -42,6 +43,18 @@ public class SphericCoordinateTest {
         assertEquals(radius, coordinate.getRadius(), 0.0);
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void testComponentConstructorWithNonFiniteParametersThrowsIllegalArgumentException() {
+        // when
+        new SphericCoordinate(Double.NEGATIVE_INFINITY, Double.NaN, Double.POSITIVE_INFINITY);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testComponentConstructorWithNegativeRadiusThrowsIllegalArgumentException() {
+        // when
+        new SphericCoordinate(-Math.PI, -0.5 * Math.PI, -1e-12);
+    }
+
     @Test
     public void testResultSetConstructor() throws SQLException {
         // given
@@ -54,6 +67,9 @@ public class SphericCoordinateTest {
         when(mockedResultSet.getDouble("coordinate_2")).thenReturn(theta);
         when(mockedResultSet.getDouble("coordinate_3")).thenReturn(radius);
 
+        ResultSetMetaData mockedMetaData = ResultSetMockingUtils.createValidResultSetMetaDataMock();
+        when(mockedResultSet.getMetaData()).thenReturn(mockedMetaData);
+
         // when
         SphericCoordinate coordinate = new SphericCoordinate(mockedResultSet);
 
@@ -65,6 +81,7 @@ public class SphericCoordinateTest {
         verify(mockedResultSet, times(1)).getDouble("coordinate_1");
         verify(mockedResultSet, times(1)).getDouble("coordinate_2");
         verify(mockedResultSet, times(1)).getDouble("coordinate_3");
+        verify(mockedResultSet, atLeastOnce()).getMetaData();
         verifyNoMoreInteractions(mockedResultSet);
     }
 
@@ -80,6 +97,36 @@ public class SphericCoordinateTest {
         ResultSet mockedResultSet = mock(ResultSet.class);
         when(mockedResultSet.getDouble(anyString())).thenThrow(new SQLException());
 
+        ResultSetMetaData mockedMetaData = ResultSetMockingUtils.createValidResultSetMetaDataMock();
+        when(mockedResultSet.getMetaData()).thenReturn(mockedMetaData);
+
+        // when
+        new SphericCoordinate(mockedResultSet);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testResultSetConstructorWithInvalidResultSetThrowsIllegalArgumentException() throws SQLException {
+        // given
+        ResultSet mockedResultSet = mock(ResultSet.class);
+
+        ResultSetMetaData mockedMetaData = ResultSetMockingUtils.createInvalidResultSetMetaDataMock();
+        when(mockedResultSet.getMetaData()).thenReturn(mockedMetaData);
+
+        // when
+        new SphericCoordinate(mockedResultSet);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testResultSetConstructorWithNegativeRadiusThrowsIllegalArgumentException() throws SQLException {
+        // given
+        ResultSet mockedResultSet = mock(ResultSet.class);
+        when(mockedResultSet.getDouble("coordinate_1")).thenReturn(-2*Math.PI);
+        when(mockedResultSet.getDouble("coordinate_2")).thenReturn(-Math.PI);
+        when(mockedResultSet.getDouble("coordinate_3")).thenReturn(-1e-12);
+
+        ResultSetMetaData mockedMetaData = ResultSetMockingUtils.createValidResultSetMetaDataMock();
+        when(mockedResultSet.getMetaData()).thenReturn(mockedMetaData);
+
         // when
         new SphericCoordinate(mockedResultSet);
     }
@@ -94,6 +141,13 @@ public class SphericCoordinateTest {
 
         ResultSet mockedResultSet = mock(ResultSet.class);
 
+        when(mockedResultSet.getDouble("coordinate_1")).thenReturn(phi);
+        when(mockedResultSet.getDouble("coordinate_2")).thenReturn(theta);
+        when(mockedResultSet.getDouble("coordinate_3")).thenReturn(radius);
+
+        ResultSetMetaData mockedMetaData = ResultSetMockingUtils.createValidResultSetMetaDataMock();
+        when(mockedResultSet.getMetaData()).thenReturn(mockedMetaData);
+
         // when
         coordinate.writeOn(mockedResultSet);
 
@@ -102,6 +156,7 @@ public class SphericCoordinateTest {
         verify(mockedResultSet, times(1)).updateDouble("coordinate_1", phi);
         verify(mockedResultSet, times(1)).updateDouble("coordinate_2", theta);
         verify(mockedResultSet, times(1)).updateDouble("coordinate_3", radius);
+        verify(mockedResultSet, atLeastOnce()).getMetaData();
         verifyNoMoreInteractions(mockedResultSet);
     }
 
@@ -122,6 +177,23 @@ public class SphericCoordinateTest {
         ResultSet mockedResultSet = mock(ResultSet.class);
         doThrow(new SQLException()).when(mockedResultSet).updateDouble(anyString(), anyDouble());
 
+        ResultSetMetaData mockedMetaData = ResultSetMockingUtils.createValidResultSetMetaDataMock();
+        when(mockedResultSet.getMetaData()).thenReturn(mockedMetaData);
+
+        // when
+        coordinate.writeOn(mockedResultSet);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testWriteOnThrowsIllegalArgumentException() throws SQLException {
+        // given
+        SphericCoordinate coordinate = new SphericCoordinate();
+
+        ResultSet mockedResultSet = mock(ResultSet.class);
+
+        ResultSetMetaData mockedMetaData = ResultSetMockingUtils.createInvalidResultSetMetaDataMock();
+        when(mockedResultSet.getMetaData()).thenReturn(mockedMetaData);
+
         // when
         coordinate.writeOn(mockedResultSet);
     }
@@ -141,15 +213,15 @@ public class SphericCoordinateTest {
     @Test
     public void testAsCartesianCoordinate() {
         // given
-        SphericCoordinate sphericCoordinate = new SphericCoordinate(Math.PI / 4, -Math.acos(1 / Math.sqrt(3)), -Math.sqrt(3));
+        SphericCoordinate sphericCoordinate = new SphericCoordinate(Math.PI / 4, -Math.acos(1 / Math.sqrt(3)), Math.sqrt(3));
 
         // when
         CartesianCoordinate cartesianCoordinate = sphericCoordinate.asCartesianCoordinate();
 
         // then
-        assertEquals(1, cartesianCoordinate.getX(), 1e-12);
-        assertEquals(1, cartesianCoordinate.getY(), 1e-12);
-        assertEquals(-1, cartesianCoordinate.getZ(), 1e-12);
+        assertEquals(-1, cartesianCoordinate.getX(), 1e-12);
+        assertEquals(-1, cartesianCoordinate.getY(), 1e-12);
+        assertEquals(1, cartesianCoordinate.getZ(), 1e-12);
     }
 
     @Test

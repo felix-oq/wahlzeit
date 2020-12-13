@@ -1,14 +1,13 @@
 package org.wahlzeit.model;
 
 import org.junit.Test;
-import org.wahlzeit.model.location.CartesianCoordinate;
-import org.wahlzeit.model.location.CoordinateType;
-import org.wahlzeit.model.location.Location;
+import org.wahlzeit.model.location.*;
 import org.wahlzeit.services.EmailAddress;
 import org.wahlzeit.services.Language;
 import org.wahlzeit.utils.StringUtil;
 
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 
 import static org.junit.Assert.assertEquals;
@@ -42,30 +41,33 @@ public class PhotoTest {
         double coordinateY = 4712.42;
         double coordinateZ = 3.12e-8;
 
-        ResultSet resultSetMock = mock(ResultSet.class);
-        when(resultSetMock.getInt("id")).thenReturn(id);
-        when(resultSetMock.getInt("owner_id")).thenReturn(ownerId);
-        when(resultSetMock.getString("owner_name")).thenReturn(ownerName);
-        when(resultSetMock.getBoolean("owner_notify_about_praise")).thenReturn(ownerNotifyAboutPraise);
-        when(resultSetMock.getString("owner_email_address")).thenReturn(ownerEmailAddress);
-        when(resultSetMock.getInt("owner_language")).thenReturn(ownerLanguage);
-        when(resultSetMock.getString("owner_home_page")).thenReturn(ownerHomePage);
-        when(resultSetMock.getInt("width")).thenReturn(width);
-        when(resultSetMock.getInt("height")).thenReturn(height);
-        when(resultSetMock.getString("tags")).thenReturn(tags);
-        when(resultSetMock.getInt("status")).thenReturn(status);
-        when(resultSetMock.getInt("praise_sum")).thenReturn(praiseSum);
-        when(resultSetMock.getInt("no_votes")).thenReturn(noVotes);
-        when(resultSetMock.getLong("creation_time")).thenReturn(creationTime);
-        when(resultSetMock.getInt("coordinate_type")).thenReturn(CoordinateType.Cartesian.ordinal());
-        when(resultSetMock.getDouble("coordinate_1")).thenReturn(coordinateX);
-        when(resultSetMock.getDouble("coordinate_2")).thenReturn(coordinateY);
-        when(resultSetMock.getDouble("coordinate_3")).thenReturn(coordinateZ);
+        ResultSet mockedResultSet = mock(ResultSet.class);
+        when(mockedResultSet.getInt("id")).thenReturn(id);
+        when(mockedResultSet.getInt("owner_id")).thenReturn(ownerId);
+        when(mockedResultSet.getString("owner_name")).thenReturn(ownerName);
+        when(mockedResultSet.getBoolean("owner_notify_about_praise")).thenReturn(ownerNotifyAboutPraise);
+        when(mockedResultSet.getString("owner_email_address")).thenReturn(ownerEmailAddress);
+        when(mockedResultSet.getInt("owner_language")).thenReturn(ownerLanguage);
+        when(mockedResultSet.getString("owner_home_page")).thenReturn(ownerHomePage);
+        when(mockedResultSet.getInt("width")).thenReturn(width);
+        when(mockedResultSet.getInt("height")).thenReturn(height);
+        when(mockedResultSet.getString("tags")).thenReturn(tags);
+        when(mockedResultSet.getInt("status")).thenReturn(status);
+        when(mockedResultSet.getInt("praise_sum")).thenReturn(praiseSum);
+        when(mockedResultSet.getInt("no_votes")).thenReturn(noVotes);
+        when(mockedResultSet.getLong("creation_time")).thenReturn(creationTime);
+        when(mockedResultSet.getInt("coordinate_type")).thenReturn(CoordinateType.Cartesian.ordinal());
+        when(mockedResultSet.getDouble("coordinate_1")).thenReturn(coordinateX);
+        when(mockedResultSet.getDouble("coordinate_2")).thenReturn(coordinateY);
+        when(mockedResultSet.getDouble("coordinate_3")).thenReturn(coordinateZ);
+
+        ResultSetMetaData mockedMetaData = ResultSetMockingUtils.createValidResultSetMetaDataMock();
+        when(mockedResultSet.getMetaData()).thenReturn(mockedMetaData);
 
         Photo photo = new Photo();
 
         // when
-        photo.readFrom(resultSetMock);
+        photo.readFrom(mockedResultSet);
 
         // then
         assertEquals(PhotoId.NULL_ID, photo.getId());
@@ -146,6 +148,13 @@ public class PhotoTest {
 
         ResultSet mockedResultSet = mock(ResultSet.class);
 
+        when(mockedResultSet.getDouble("coordinate_1")).thenReturn(coordinateX);
+        when(mockedResultSet.getDouble("coordinate_2")).thenReturn(coordinateY);
+        when(mockedResultSet.getDouble("coordinate_3")).thenReturn(coordinateZ);
+
+        ResultSetMetaData mockedMetaData = ResultSetMockingUtils.createValidResultSetMetaDataMock();
+        when(mockedResultSet.getMetaData()).thenReturn(mockedMetaData);
+
         // when
         photo.writeOn(mockedResultSet);
 
@@ -168,6 +177,7 @@ public class PhotoTest {
         verify(mockedResultSet, times(1)).updateDouble("coordinate_1", coordinateX);
         verify(mockedResultSet, times(1)).updateDouble("coordinate_2", coordinateY);
         verify(mockedResultSet, times(1)).updateDouble("coordinate_3", coordinateZ);
+        verify(mockedResultSet, atLeastOnce()).getMetaData();
         verifyNoMoreInteractions(mockedResultSet);
     }
 

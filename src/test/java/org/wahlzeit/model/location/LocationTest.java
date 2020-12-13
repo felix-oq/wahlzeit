@@ -3,6 +3,7 @@ package org.wahlzeit.model.location;
 import org.junit.Test;
 
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 
 import static org.junit.Assert.*;
@@ -66,6 +67,9 @@ public class LocationTest {
         when(mockedResultSet.getDouble("coordinate_2")).thenReturn(y);
         when(mockedResultSet.getDouble("coordinate_3")).thenReturn(z);
 
+        ResultSetMetaData mockedMetaData = ResultSetMockingUtils.createValidResultSetMetaDataMock();
+        when(mockedResultSet.getMetaData()).thenReturn(mockedMetaData);
+
         // when
         Location location = new Location(mockedResultSet);
 
@@ -81,6 +85,7 @@ public class LocationTest {
         verify(mockedResultSet, times(1)).getDouble("coordinate_1");
         verify(mockedResultSet, times(1)).getDouble("coordinate_2");
         verify(mockedResultSet, times(1)).getDouble("coordinate_3");
+        verify(mockedResultSet, atLeastOnce()).getMetaData();
         verifyNoMoreInteractions(mockedResultSet);
     }
 
@@ -98,6 +103,9 @@ public class LocationTest {
         when(mockedResultSet.getDouble("coordinate_2")).thenReturn(theta);
         when(mockedResultSet.getDouble("coordinate_3")).thenReturn(radius);
 
+        ResultSetMetaData mockedMetaData = ResultSetMockingUtils.createValidResultSetMetaDataMock();
+        when(mockedResultSet.getMetaData()).thenReturn(mockedMetaData);
+
         // when
         Location location = new Location(mockedResultSet);
 
@@ -109,10 +117,11 @@ public class LocationTest {
         assertEquals(theta, sphericCoordinate.getTheta(), 0.0);
         assertEquals(radius, sphericCoordinate.getRadius(), 0.0);
 
-        verify(mockedResultSet, times(1)).getInt("coordinate_type");
-        verify(mockedResultSet, times(1)).getDouble("coordinate_1");
-        verify(mockedResultSet, times(1)).getDouble("coordinate_2");
-        verify(mockedResultSet, times(1)).getDouble("coordinate_3");
+        verify(mockedResultSet, atLeastOnce()).getInt("coordinate_type");
+        verify(mockedResultSet, atLeastOnce()).getDouble("coordinate_1");
+        verify(mockedResultSet, atLeastOnce()).getDouble("coordinate_2");
+        verify(mockedResultSet, atLeastOnce()).getDouble("coordinate_3");
+        verify(mockedResultSet, atLeastOnce()).getMetaData();
         verifyNoMoreInteractions(mockedResultSet);
     }
 
@@ -130,6 +139,9 @@ public class LocationTest {
         // given
         ResultSet mockedResultSet = mock(ResultSet.class);
         when(mockedResultSet.getDouble(anyString())).thenThrow(new SQLException());
+
+        ResultSetMetaData mockedMetaData = ResultSetMockingUtils.createValidResultSetMetaDataMock();
+        when(mockedResultSet.getMetaData()).thenReturn(mockedMetaData);
 
         // when
         new Location(mockedResultSet);

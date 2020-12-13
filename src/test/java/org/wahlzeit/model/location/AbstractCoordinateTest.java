@@ -3,6 +3,7 @@ package org.wahlzeit.model.location;
 import org.junit.Test;
 
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 
 import static org.junit.Assert.*;
@@ -17,16 +18,20 @@ public class AbstractCoordinateTest {
         // given
         ResultSet mockedResultSet = mock(ResultSet.class);
 
+        ResultSetMetaData mockedMetaData = ResultSetMockingUtils.createValidResultSetMetaDataMock();
+        when(mockedResultSet.getMetaData()).thenReturn(mockedMetaData);
+
         CoordinateType coordinateType = CoordinateType.Spheric;
 
         AbstractCoordinate mockedAbstractCoordinate = mock(AbstractCoordinate.class, CALLS_REAL_METHODS);
-        when(mockedAbstractCoordinate.getType()).thenReturn(coordinateType);
+        when(mockedAbstractCoordinate.doGetType()).thenReturn(coordinateType);
 
         // when
         mockedAbstractCoordinate.writeOn(mockedResultSet);
 
         // then
         verify(mockedResultSet, times(1)).updateInt("coordinate_type", coordinateType.ordinal());
+        verify(mockedResultSet, atLeastOnce()).getMetaData();
         verifyNoMoreInteractions(mockedResultSet);
     }
 
@@ -45,10 +50,30 @@ public class AbstractCoordinateTest {
         CoordinateType coordinateType = CoordinateType.Spheric;
 
         AbstractCoordinate mockedAbstractCoordinate = mock(AbstractCoordinate.class, CALLS_REAL_METHODS);
-        when(mockedAbstractCoordinate.getType()).thenReturn(coordinateType);
+        when(mockedAbstractCoordinate.doGetType()).thenReturn(coordinateType);
 
         ResultSet mockedResultSet = mock(ResultSet.class);
         doThrow(new SQLException()).when(mockedResultSet).updateInt(anyString(), anyInt());
+
+        ResultSetMetaData mockedMetaData = ResultSetMockingUtils.createValidResultSetMetaDataMock();
+        when(mockedResultSet.getMetaData()).thenReturn(mockedMetaData);
+
+        // when
+        mockedAbstractCoordinate.writeOn(mockedResultSet);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testWriteOnThrowsIllegalArgumentException() throws SQLException {
+        // given
+        CoordinateType coordinateType = CoordinateType.Cartesian;
+
+        AbstractCoordinate mockedAbstractCoordinate = mock(AbstractCoordinate.class, CALLS_REAL_METHODS);
+        when(mockedAbstractCoordinate.doGetType()).thenReturn(coordinateType);
+
+        ResultSet mockedResultSet = mock(ResultSet.class);
+
+        ResultSetMetaData mockedMetaData = ResultSetMockingUtils.createInvalidResultSetMetaDataMock();
+        when(mockedResultSet.getMetaData()).thenReturn(mockedMetaData);
 
         // when
         mockedAbstractCoordinate.writeOn(mockedResultSet);

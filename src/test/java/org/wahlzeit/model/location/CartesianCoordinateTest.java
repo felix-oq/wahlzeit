@@ -41,6 +41,12 @@ public class CartesianCoordinateTest {
         assertEquals(z, coordinate.getZ(), 0.0);
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void testComponentConstructorThrowsIllegalArgumentException() {
+        // when
+        new CartesianCoordinate(Double.NaN, Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY);
+    }
+
     @Test
     public void testResultSetConstructor() throws SQLException {
         // given
@@ -53,6 +59,9 @@ public class CartesianCoordinateTest {
         when(mockedResultSet.getDouble("coordinate_2")).thenReturn(y);
         when(mockedResultSet.getDouble("coordinate_3")).thenReturn(z);
 
+        ResultSetMetaData mockedMetaData = ResultSetMockingUtils.createValidResultSetMetaDataMock();
+        when(mockedResultSet.getMetaData()).thenReturn(mockedMetaData);
+
         // when
         CartesianCoordinate coordinate = new CartesianCoordinate(mockedResultSet);
 
@@ -64,6 +73,7 @@ public class CartesianCoordinateTest {
         verify(mockedResultSet, times(1)).getDouble("coordinate_1");
         verify(mockedResultSet, times(1)).getDouble("coordinate_2");
         verify(mockedResultSet, times(1)).getDouble("coordinate_3");
+        verify(mockedResultSet, atLeastOnce()).getMetaData();
         verifyNoMoreInteractions(mockedResultSet);
     }
 
@@ -79,6 +89,21 @@ public class CartesianCoordinateTest {
         ResultSet mockedResultSet = mock(ResultSet.class);
         when(mockedResultSet.getDouble(anyString())).thenThrow(new SQLException());
 
+        ResultSetMetaData mockedMetaData = ResultSetMockingUtils.createValidResultSetMetaDataMock();
+        when(mockedResultSet.getMetaData()).thenReturn(mockedMetaData);
+
+        // when
+        new CartesianCoordinate(mockedResultSet);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testResultSetConstructorThrowsIllegalArgumentException() throws SQLException {
+        // given
+        ResultSet mockedResultSet = mock(ResultSet.class);
+
+        ResultSetMetaData mockedMetaData = ResultSetMockingUtils.createInvalidResultSetMetaDataMock();
+        when(mockedResultSet.getMetaData()).thenReturn(mockedMetaData);
+
         // when
         new CartesianCoordinate(mockedResultSet);
     }
@@ -93,6 +118,13 @@ public class CartesianCoordinateTest {
 
         ResultSet mockedResultSet = mock(ResultSet.class);
 
+        when(mockedResultSet.getDouble("coordinate_1")).thenReturn(x);
+        when(mockedResultSet.getDouble("coordinate_2")).thenReturn(y);
+        when(mockedResultSet.getDouble("coordinate_3")).thenReturn(z);
+
+        ResultSetMetaData mockedMetaData = ResultSetMockingUtils.createValidResultSetMetaDataMock();
+        when(mockedResultSet.getMetaData()).thenReturn(mockedMetaData);
+
         // when
         coordinate.writeOn(mockedResultSet);
 
@@ -101,6 +133,7 @@ public class CartesianCoordinateTest {
         verify(mockedResultSet, times(1)).updateDouble("coordinate_1", x);
         verify(mockedResultSet, times(1)).updateDouble("coordinate_2", y);
         verify(mockedResultSet, times(1)).updateDouble("coordinate_3", z);
+        verify(mockedResultSet, atLeastOnce()).getMetaData();
         verifyNoMoreInteractions(mockedResultSet);
     }
 
@@ -120,6 +153,23 @@ public class CartesianCoordinateTest {
 
         ResultSet mockedResultSet = mock(ResultSet.class);
         doThrow(new SQLException()).when(mockedResultSet).updateDouble(anyString(), anyDouble());
+
+        ResultSetMetaData mockedMetaData = ResultSetMockingUtils.createValidResultSetMetaDataMock();
+        when(mockedResultSet.getMetaData()).thenReturn(mockedMetaData);
+
+        // when
+        coordinate.writeOn(mockedResultSet);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testWriteOnThrowsIllegalArgumentException() throws SQLException {
+        // given
+        CartesianCoordinate coordinate = new CartesianCoordinate();
+
+        ResultSet mockedResultSet = mock(ResultSet.class);
+
+        ResultSetMetaData mockedMetaData = ResultSetMockingUtils.createInvalidResultSetMetaDataMock();
+        when(mockedResultSet.getMetaData()).thenReturn(mockedMetaData);
 
         // when
         coordinate.writeOn(mockedResultSet);

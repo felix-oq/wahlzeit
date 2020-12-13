@@ -11,6 +11,8 @@ public interface Coordinate {
     /**
      * Writes the contents of this coordinate on the provided result set (including its coordinate type).
      * @param rset the result set to write the values on
+     * @throws IllegalArgumentException if the provided result set does not have the necessary columns with their
+     *                                  respective types
      * @throws SQLException if the necessary values cannot be written on the provided result set
      * @throws NullPointerException if the argument is null
      */
