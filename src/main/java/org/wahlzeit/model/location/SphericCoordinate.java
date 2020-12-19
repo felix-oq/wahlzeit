@@ -1,5 +1,7 @@
 package org.wahlzeit.model.location;
 
+import org.wahlzeit.utils.Assertions;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -36,9 +38,9 @@ public class SphericCoordinate extends AbstractCoordinate {
      */
     public SphericCoordinate(double phi, double theta, double radius) {
         // pre-condition
-        assertDoubleArgumentIsFinite(phi, "The entered phi-component must be finite");
-        assertDoubleArgumentIsFinite(theta, "The entered theta-component must be finite");
-        assertDoubleArgumentIsFinite(radius, "The entered radius-component must be finite");
+        Assertions.checkDoubleArgumentIsFinite(phi, "The entered phi-component must be finite");
+        Assertions.checkDoubleArgumentIsFinite(theta, "The entered theta-component must be finite");
+        Assertions.checkDoubleArgumentIsFinite(radius, "The entered radius-component must be finite");
         if (radius < 0) throw new IllegalArgumentException("The entered radius-component must be non-negative");
 
         this.phi = phi;
@@ -61,7 +63,7 @@ public class SphericCoordinate extends AbstractCoordinate {
      */
     public SphericCoordinate(ResultSet rset) throws SQLException {
         // pre-condition
-        assertNotNull(rset, "The entered result set must not be null");
+        Assertions.checkNotNull(rset, "The entered result set must not be null");
         assertResultSetHasCoordinateColumns(rset);
 
         this.phi = rset.getDouble("coordinate_1");
@@ -87,7 +89,7 @@ public class SphericCoordinate extends AbstractCoordinate {
     @Override
     protected void doWriteOn(ResultSet rset) throws SQLException {
         // pre-condition
-        assertNotNull(rset, "The entered result set must not be null");
+        Assertions.checkNotNull(rset, "The entered result set must not be null");
         assertResultSetHasCoordinateColumns(rset);
 
         rset.updateDouble("coordinate_1", getPhi());

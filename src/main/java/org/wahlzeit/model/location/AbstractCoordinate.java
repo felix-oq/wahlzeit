@@ -1,5 +1,7 @@
 package org.wahlzeit.model.location;
 
+import org.wahlzeit.utils.Assertions;
+
 import java.sql.*;
 import java.util.Objects;
 
@@ -13,65 +15,10 @@ public abstract class AbstractCoordinate implements Coordinate {
 
     protected abstract void assertClassInvariants();
 
-    /**
-     * Checks if the entered object is null.
-     * @param object the object to check
-     * @param message the error message for the exception if the object is null
-     * @throws NullPointerException if the object is null
-     */
-    protected static void assertNotNull(Object object, String message) {
-        if (object == null)
-            throw new NullPointerException(message);
-    }
-
-    /**
-     * Checks if the entered double is finite.
-     * @param d the double to check
-     * @param message the error message for the exception if the double is not finite
-     * @throws IllegalArgumentException if the double is not finite
-     */
-    protected static void assertDoubleArgumentIsFinite(double d, String message) {
-        if (!Double.isFinite(d))
-            throw new IllegalArgumentException(message);
-    }
-
     protected static void assertResultSetHasCoordinateColumns(ResultSet rset) throws SQLException {
-        assertResultSetArgumentHasColumnAndType(rset, "coordinate_1", Types.DOUBLE);
-        assertResultSetArgumentHasColumnAndType(rset, "coordinate_2", Types.DOUBLE);
-        assertResultSetArgumentHasColumnAndType(rset, "coordinate_3", Types.DOUBLE);
-    }
-
-    /**
-     * Checks if the entered result set has a column with a certain label and a certain type.
-     * @param rset the result set to check
-     * @param columnLabel the label that a column in the result set should have
-     * @param sqlType the sql type that the column should have (choose a value of {@link Types})
-     * @throws IllegalArgumentException if the result set does not have a column with the specified label or if the
-     *                                  column with the specified label does not have the specified type
-     * @throws SQLException if the database cannot be accessed or if the result set is closed
-     */
-    protected static void assertResultSetArgumentHasColumnAndType(ResultSet rset, String columnLabel, int sqlType)
-            throws SQLException {
-
-        ResultSetMetaData metaData = rset.getMetaData();
-
-        int columnIndex = assertResultSetArgumentHasColumn(metaData, columnLabel,
-                "The column '" + columnLabel + "' must exist");
-        assertResultSetArgumentHasColumnType(metaData, columnIndex, sqlType,
-                "The column '" + columnLabel + "' must be of type " + JDBCType.valueOf(sqlType).getName());
-    }
-
-    private static int assertResultSetArgumentHasColumn(ResultSetMetaData metaData, String columnLabel, String message) throws SQLException {
-        for (int columnIndex = 1; columnIndex <= metaData.getColumnCount(); ++columnIndex) {
-            if (metaData.getColumnLabel(columnIndex).equals(columnLabel))
-                return columnIndex;
-        }
-        throw new IllegalArgumentException(message);
-    }
-
-    private static void assertResultSetArgumentHasColumnType(ResultSetMetaData metaData, int columnIndex, int sqlType, String message) throws SQLException {
-        if (metaData.getColumnType(columnIndex) != sqlType)
-            throw new IllegalArgumentException(message);
+        Assertions.checkResultSetArgumentHasColumnAndType(rset, "coordinate_1", Types.DOUBLE);
+        Assertions.checkResultSetArgumentHasColumnAndType(rset, "coordinate_2", Types.DOUBLE);
+        Assertions.checkResultSetArgumentHasColumnAndType(rset, "coordinate_3", Types.DOUBLE);
     }
 
     @Override
@@ -80,7 +27,7 @@ public abstract class AbstractCoordinate implements Coordinate {
         assertClassInvariants();
 
         // pre-condition
-        assertResultSetArgumentHasColumnAndType(rset, "coordinate_type", Types.INTEGER);
+        Assertions.checkResultSetArgumentHasColumnAndType(rset, "coordinate_type", Types.INTEGER);
 
         rset.updateInt("coordinate_type", getType().ordinal());
         doWriteOn(rset);
@@ -115,7 +62,7 @@ public abstract class AbstractCoordinate implements Coordinate {
         assertClassInvariants();
 
         // pre-condition
-        assertNotNull(otherCoordinate, "The entered coordinate for cartesian distance calculation must not be null");
+        Assertions.checkNotNull(otherCoordinate, "The entered coordinate for cartesian distance calculation must not be null");
 
         CartesianCoordinate thisAsCartesianCoordinate = this.asCartesianCoordinate();
         CartesianCoordinate otherAsCartesianCoordinate = otherCoordinate.asCartesianCoordinate();
@@ -143,7 +90,7 @@ public abstract class AbstractCoordinate implements Coordinate {
         assertClassInvariants();
 
         // pre-condition
-        assertNotNull(otherCoordinate, "The entered coordinate for central angle calculation must not be null");
+        Assertions.checkNotNull(otherCoordinate, "The entered coordinate for central angle calculation must not be null");
 
         SphericCoordinate thisAsSphericCoordinate = this.asSphericCoordinate();
         SphericCoordinate otherAsSphericCoordinate = otherCoordinate.asSphericCoordinate();

@@ -1,5 +1,7 @@
 package org.wahlzeit.model.location;
 
+import org.wahlzeit.utils.Assertions;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -35,9 +37,9 @@ public class CartesianCoordinate extends AbstractCoordinate {
      */
     public CartesianCoordinate(double x, double y, double z) {
         // pre-condition
-        assertDoubleArgumentIsFinite(x, "The entered x-component must be finite");
-        assertDoubleArgumentIsFinite(y, "The entered y-component must be finite");
-        assertDoubleArgumentIsFinite(z, "The entered z-component must be finite");
+        Assertions.checkDoubleArgumentIsFinite(x, "The entered x-component must be finite");
+        Assertions.checkDoubleArgumentIsFinite(y, "The entered y-component must be finite");
+        Assertions.checkDoubleArgumentIsFinite(z, "The entered z-component must be finite");
 
         this.x = x;
         this.y = y;
@@ -59,7 +61,7 @@ public class CartesianCoordinate extends AbstractCoordinate {
      */
     public CartesianCoordinate(ResultSet rset) throws SQLException {
         // pre-condition
-        assertNotNull(rset, "The entered result set must not be null");
+        Assertions.checkNotNull(rset, "The entered result set must not be null");
         assertResultSetHasCoordinateColumns(rset);
 
         this.x = rset.getDouble("coordinate_1");
@@ -80,7 +82,7 @@ public class CartesianCoordinate extends AbstractCoordinate {
     @Override
     protected void doWriteOn(ResultSet rset) throws SQLException {
         // pre-condition
-        assertNotNull(rset, "The entered result set must not be null");
+        Assertions.checkNotNull(rset, "The entered result set must not be null");
         assertResultSetHasCoordinateColumns(rset);
 
         rset.updateDouble("coordinate_1", getX());
