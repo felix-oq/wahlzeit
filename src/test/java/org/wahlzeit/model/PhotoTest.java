@@ -94,7 +94,7 @@ public class PhotoTest {
     }
 
     @Test(expected = SQLException.class)
-    public void testReadFromThrowsSQLException() throws SQLException {
+    public void testReadFromThrowsSQLExceptionWhenDatabaseFails() throws SQLException {
         // given
         ResultSet mockedResultSet = mock(ResultSet.class);
         when(mockedResultSet.getDouble(anyString())).thenThrow(new SQLException());
@@ -107,7 +107,32 @@ public class PhotoTest {
         when(mockedResultSet.getMetaData()).thenReturn(mockedMetaData);
 
         // when
-        new Location(mockedResultSet);
+        new Photo(mockedResultSet);
+    }
+
+    @Test(expected = SQLException.class)
+    public void testReadFromThrowsSQLExceptionWhenDatabaseHasInvalidSchema() throws SQLException {
+        // given
+        ResultSet mockedResultSet = mock(ResultSet.class);
+
+        ResultSetMetaData mockedMetaData = ResultSetMockingUtils.createInvalidResultSetMetaDataMock();
+        when(mockedResultSet.getMetaData()).thenReturn(mockedMetaData);
+
+        // when
+        new Photo(mockedResultSet);
+    }
+
+    @Test(expected = SQLException.class)
+    public void testReadFromThrowsSQLExceptionWhenDatabaseContainsUninterpretableCoordinateType() throws SQLException {
+        // given
+        ResultSet mockedResultSet = mock(ResultSet.class);
+        when(mockedResultSet.getInt("coordinate_type")).thenReturn(-1);
+
+        ResultSetMetaData mockedMetaData = ResultSetMockingUtils.createValidResultSetMetaDataMock();
+        when(mockedResultSet.getMetaData()).thenReturn(mockedMetaData);
+
+        // when
+        new Photo(mockedResultSet);
     }
 
     @Test
@@ -185,7 +210,7 @@ public class PhotoTest {
     }
 
     @Test(expected = SQLException.class)
-    public void testWriteOnThrowsSQLException() throws SQLException {
+    public void testWriteOnThrowsSQLExceptionWhenDatabaseFails() throws SQLException {
         // given
         ResultSet mockedResultSet = mock(ResultSet.class);
         doThrow(new SQLException()).when(mockedResultSet).updateDouble(anyString(), anyDouble());
@@ -193,6 +218,23 @@ public class PhotoTest {
         doThrow(new SQLException()).when(mockedResultSet).updateLong(anyString(), anyLong());
         doThrow(new SQLException()).when(mockedResultSet).updateString(anyString(), anyString());
         doThrow(new SQLException()).when(mockedResultSet).updateBoolean(anyString(), anyBoolean());
+
+        ResultSetMetaData mockedMetaData = ResultSetMockingUtils.createValidResultSetMetaDataMock();
+        when(mockedResultSet.getMetaData()).thenReturn(mockedMetaData);
+
+        Photo photo = new Photo();
+
+        // when
+        photo.writeOn(mockedResultSet);
+    }
+
+    @Test(expected = SQLException.class)
+    public void testWriteOnThrowsSQLExceptionWhenDatabaseHasInvalidSchema() throws SQLException {
+        // given
+        ResultSet mockedResultSet = mock(ResultSet.class);
+
+        ResultSetMetaData mockedMetaData = ResultSetMockingUtils.createInvalidResultSetMetaDataMock();
+        when(mockedResultSet.getMetaData()).thenReturn(mockedMetaData);
 
         Photo photo = new Photo();
 

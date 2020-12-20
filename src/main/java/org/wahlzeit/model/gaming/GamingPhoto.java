@@ -51,7 +51,8 @@ public class GamingPhoto extends Photo {
             videoGame = new VideoGame(rset);
         } catch (IllegalArgumentException illegalArgumentException) {
             throw new SQLException("Unable to read the video game data for the photo" +
-                    " due to missing columns or wrong column types in the database", illegalArgumentException);
+                    " due to missing columns, wrong column types in the database or a blank video game title",
+                    illegalArgumentException);
         } catch (IndexOutOfBoundsException indexOutOfBoundsException) {
             throw new SQLException("Unable to interpret the video game genre that is stored in the database",
                     indexOutOfBoundsException);

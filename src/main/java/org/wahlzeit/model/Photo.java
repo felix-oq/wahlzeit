@@ -148,6 +148,16 @@ public class Photo extends DataObject {
 	 * 
 	 */
 	public void readFrom(ResultSet rset) throws SQLException {
+		try {
+			location = new Location(rset);
+		} catch (IllegalArgumentException illegalArgumentException) {
+			throw new SQLException("Unable to read the location data for the photo" +
+					" due to missing columns or wrong column types in the database", illegalArgumentException);
+		} catch (IndexOutOfBoundsException indexOutOfBoundsException) {
+			throw new SQLException("Unable to interpret the coordinate type that is stored in the database",
+					indexOutOfBoundsException);
+		}
+
 		id = PhotoId.getIdFromInt(rset.getInt("id"));
 
 		ownerId = rset.getInt("owner_id");
@@ -170,22 +180,21 @@ public class Photo extends DataObject {
 		creationTime = rset.getLong("creation_time");
 
 		maxPhotoSize = PhotoSize.getFromWidthHeight(width, height);
-
-		try {
-			location = new Location(rset);
-		} catch (IllegalArgumentException illegalArgumentException) {
-			throw new SQLException("Unable to read the location data for the photo" +
-					" due to missing columns or wrong column types in the database", illegalArgumentException);
-		} catch (IndexOutOfBoundsException indexOutOfBoundsException) {
-			throw new SQLException("Unable to interpret the coordinate type that is stored in the database",
-					indexOutOfBoundsException);
-		}
 	}
 	
 	/**
 	 * 
 	 */
 	public void writeOn(ResultSet rset) throws SQLException {
+		if (location != null) {
+			try {
+				location.writeOn(rset);
+			} catch (IllegalArgumentException exception) {
+				throw new SQLException("Unable to store the location data for the photo" +
+						" due to missing columns or wrong column types in the database", exception);
+			}
+		}
+
 		rset.updateInt("id", id.asInt());
 		rset.updateInt("owner_id", ownerId);
 		rset.updateString("owner_name", ownerName);
@@ -200,15 +209,6 @@ public class Photo extends DataObject {
 		rset.updateInt("praise_sum", praiseSum);
 		rset.updateInt("no_votes", noVotes);
 		rset.updateLong("creation_time", creationTime);
-
-		if (location != null) {
-			try {
-				location.writeOn(rset);
-			} catch (IllegalArgumentException exception) {
-				throw new SQLException("Unable to store the location data for the photo" +
-						" due to missing columns or wrong column types in the database", exception);
-			}
-		}
 	}
 
 	/**
