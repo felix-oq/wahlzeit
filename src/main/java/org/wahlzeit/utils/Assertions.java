@@ -21,13 +21,38 @@ public class Assertions {
 
     /**
      * Throws a {@link NullPointerException} if the entered object is null.
-     * @param object the object to be check
+     * @param object the object to check
      * @param message the error message for the exception if the object is null
      * @throws NullPointerException if the object is null
      */
     public static void checkNotNull(Object object, String message) {
         if (object == null)
             throw new NullPointerException(message);
+    }
+
+    /**
+     * Throws a {@link IndexOutOfBoundsException} if the entered index is not within the given range.
+     * @param index the index to check
+     * @param minIndexIncluded the begin of the range (included)
+     * @param maxIndexExcluded the end of the range (excluded)
+     * @param message the error message for the exception if the index is out of the range
+     * @throws IndexOutOfBoundsException if the index is out of the range
+     */
+    public static void checkInRange(int index, int minIndexIncluded, int maxIndexExcluded, String message) {
+        if (index < minIndexIncluded || maxIndexExcluded <= index)
+            throw new IndexOutOfBoundsException(message);
+    }
+
+    /**
+     * Throws a {@link IndexOutOfBoundsException} if the entered index is not within the given range. The range starts
+     * at zero which is included in the range.
+     * @param index the index to check
+     * @param maxIndexExcluded the end of the range (excluded)
+     * @param message the error message for the exception if the index is out of the range
+     * @throws IndexOutOfBoundsException if the index is out of the range
+     */
+    public static void checkInRange(int index, int maxIndexExcluded, String message) {
+        checkInRange(index, 0, maxIndexExcluded, message);
     }
 
     /**

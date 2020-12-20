@@ -156,6 +156,21 @@ public class LocationTest {
         when(mockedResultSet.getDouble("coordinate_y")).thenReturn(1023.123);
         when(mockedResultSet.getDouble("coordinate_z")).thenReturn(-0.023);
 
+        ResultSetMetaData mockedMetaData = ResultSetMockingUtils.createValidResultSetMetaDataMock();
+        when(mockedResultSet.getMetaData()).thenReturn(mockedMetaData);
+
+        // when
+        new Location(mockedResultSet);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testResultSetConstructorThrowsIllegalArgumentException() throws SQLException {
+        // given
+        ResultSet mockedResultSet = mock(ResultSet.class);
+
+        ResultSetMetaData mockedMetaData = ResultSetMockingUtils.createInvalidResultSetMetaDataMock();
+        when(mockedResultSet.getMetaData()).thenReturn(mockedMetaData);
+
         // when
         new Location(mockedResultSet);
     }

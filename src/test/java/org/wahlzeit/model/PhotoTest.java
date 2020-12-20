@@ -103,6 +103,9 @@ public class PhotoTest {
         when(mockedResultSet.getString(anyString())).thenThrow(new SQLException());
         when(mockedResultSet.getBoolean(anyString())).thenThrow(new SQLException());
 
+        ResultSetMetaData mockedMetaData = ResultSetMockingUtils.createValidResultSetMetaDataMock();
+        when(mockedResultSet.getMetaData()).thenReturn(mockedMetaData);
+
         // when
         new Location(mockedResultSet);
     }
