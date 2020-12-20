@@ -15,19 +15,16 @@ public class GamingPhoto extends Photo {
     /**
      * The video game of which this image is taken from.
      */
-    private VideoGame videoGame = new VideoGame();
-
-    public GamingPhoto() {
-        super();
-    }
+    private VideoGame videoGame;
 
     public GamingPhoto(VideoGame videoGame) {
         super();
         this.videoGame = videoGame;
     }
 
-    public GamingPhoto(PhotoId myId) {
+    public GamingPhoto(PhotoId myId, VideoGame videoGame) {
         super(myId);
+        this.videoGame = videoGame;
     }
 
     public GamingPhoto(ResultSet rset) throws SQLException {
@@ -37,12 +34,16 @@ public class GamingPhoto extends Photo {
     @Override
     public void writeOn(ResultSet rset) throws SQLException {
         super.writeOn(rset);
+
+        // TODO exception handling
         videoGame.writeOn(rset);
     }
 
     @Override
     public void readFrom(ResultSet rset) throws SQLException {
         super.readFrom(rset);
+
+        // TODO exception handling
         videoGame = new VideoGame(rset);
     }
 

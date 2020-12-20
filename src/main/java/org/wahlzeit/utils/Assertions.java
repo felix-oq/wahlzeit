@@ -31,6 +31,18 @@ public class Assertions {
     }
 
     /**
+     * Checks if the entered string is not blank. A string is considered as blank if it is empty or if it only contains
+     * whitespaces.
+     * @param string the string to check
+     * @param message the error message for the exception if the string is blank
+     * @throws IllegalArgumentException if the string is blank
+     */
+    public static void checkStringArgumentIsNotBlank(String string, String message) {
+            if (string.trim().isEmpty())
+                throw new IllegalArgumentException(message);
+    }
+
+    /**
      * Throws a {@link IndexOutOfBoundsException} if the entered index is not within the given range.
      * @param index the index to check
      * @param minIndexIncluded the begin of the range (included)
@@ -75,7 +87,7 @@ public class Assertions {
      * @throws SQLException if the database cannot be accessed or if the result set is closed
      */
     public static void checkResultSetArgumentHasColumnAndType(ResultSet rset, String columnLabel, int sqlType)
-            throws SQLException {
+        throws SQLException {
 
         ResultSetMetaData metaData = rset.getMetaData();
 
@@ -98,3 +110,4 @@ public class Assertions {
     }
 
 }
+
