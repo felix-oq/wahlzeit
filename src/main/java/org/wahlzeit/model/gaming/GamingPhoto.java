@@ -35,16 +35,27 @@ public class GamingPhoto extends Photo {
     public void writeOn(ResultSet rset) throws SQLException {
         super.writeOn(rset);
 
-        // TODO exception handling
-        videoGame.writeOn(rset);
+        try {
+            videoGame.writeOn(rset);
+        } catch (IllegalArgumentException illegalArgumentException) {
+            throw new SQLException("Unable to store the video game data for the photo" +
+                    " due to missing columns or wrong column types in the database", illegalArgumentException);
+        }
     }
 
     @Override
     public void readFrom(ResultSet rset) throws SQLException {
         super.readFrom(rset);
 
-        // TODO exception handling
-        videoGame = new VideoGame(rset);
+        try {
+            videoGame = new VideoGame(rset);
+        } catch (IllegalArgumentException illegalArgumentException) {
+            throw new SQLException("Unable to read the video game data for the photo" +
+                    " due to missing columns or wrong column types in the database", illegalArgumentException);
+        } catch (IndexOutOfBoundsException indexOutOfBoundsException) {
+            throw new SQLException("Unable to interpret the video game genre that is stored in the database",
+                    indexOutOfBoundsException);
+        }
     }
 
 }
