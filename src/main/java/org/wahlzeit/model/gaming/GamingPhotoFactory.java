@@ -13,17 +13,17 @@ import java.sql.SQLException;
 public class GamingPhotoFactory extends PhotoFactory {
 
     @Override
-    public Photo createPhoto() {
+    public GamingPhoto createPhoto() {
         return new GamingPhoto();
     }
 
     @Override
-    public Photo createPhoto(PhotoId id) {
+    public GamingPhoto createPhoto(PhotoId id) {
         return new GamingPhoto(id);
     }
 
     @Override
-    public Photo createPhoto(ResultSet rs) throws SQLException {
+    public GamingPhoto createPhoto(ResultSet rs) throws SQLException {
         return new GamingPhoto(rs);
     }
 
