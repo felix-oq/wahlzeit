@@ -171,7 +171,15 @@ public class Photo extends DataObject {
 
 		maxPhotoSize = PhotoSize.getFromWidthHeight(width, height);
 
-		location = new Location(rset);
+		try {
+			location = new Location(rset);
+		} catch (IllegalArgumentException illegalArgumentException) {
+			throw new SQLException("Unable to read the location data for the photo" +
+					" due to missing columns or wrong column types in the database", illegalArgumentException);
+		} catch (IndexOutOfBoundsException indexOutOfBoundsException) {
+			throw new SQLException("Unable to interpret the coordinate type that is stored in the database",
+					indexOutOfBoundsException);
+		}
 	}
 	
 	/**
@@ -193,7 +201,14 @@ public class Photo extends DataObject {
 		rset.updateInt("no_votes", noVotes);
 		rset.updateLong("creation_time", creationTime);
 
-		location.writeOn(rset);
+		if (location != null) {
+			try {
+				location.writeOn(rset);
+			} catch (IllegalArgumentException exception) {
+				throw new SQLException("Unable to store the location data for the photo" +
+						" due to missing columns or wrong column types in the database", exception);
+			}
+		}
 	}
 
 	/**
