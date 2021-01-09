@@ -15,48 +15,51 @@ import static org.mockito.Mockito.*;
 public class SphericCoordinateTest {
 
     @Test
-    public void testDefaultConstructor() {
+    public void testDefaultGetValueObject() {
         // when
-        SphericCoordinate coordinate = new SphericCoordinate();
+        SphericCoordinate coordinate = SphericCoordinate.getValueObject();
 
         // then
         assertEquals(0.0, coordinate.getPhi(), 0.0);
         assertEquals(0.0, coordinate.getTheta(), 0.0);
         assertEquals(0.0, coordinate.getRadius(), 0.0);
 
-        assertEquals(new SphericCoordinate(0.0, 0.0, 0.0), coordinate);
+        assertEquals(SphericCoordinate.getValueObject(0.0, 0.0, 0.0), coordinate);
+        assertSame(SphericCoordinate.getValueObject(0.0, 0.0, 0.0), coordinate);
     }
 
     @Test
-    public void testComponentConstructor() {
+    public void testComponentGetValueObject() {
         // given
         double phi = -42.24;
         double theta = 654.321;
         double radius = 2.7183;
 
         // when
-        SphericCoordinate coordinate = new SphericCoordinate(phi, theta, radius);
+        SphericCoordinate coordinate = SphericCoordinate.getValueObject(phi, theta, radius);
 
         // then
         assertEquals(phi, coordinate.getPhi(), 0.0);
         assertEquals(theta, coordinate.getTheta(), 0.0);
         assertEquals(radius, coordinate.getRadius(), 0.0);
+
+        assertSame(SphericCoordinate.getValueObject(phi, theta, radius), coordinate);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testComponentConstructorWithNonFiniteParametersThrowsIllegalArgumentException() {
+    public void testComponentGetValueObjectWithNonFiniteParametersThrowsIllegalArgumentException() {
         // when
-        new SphericCoordinate(Double.NEGATIVE_INFINITY, Double.NaN, Double.POSITIVE_INFINITY);
+        SphericCoordinate.getValueObject(Double.NEGATIVE_INFINITY, Double.NaN, Double.POSITIVE_INFINITY);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testComponentConstructorWithNegativeRadiusThrowsIllegalArgumentException() {
+    public void testComponentGetValueObjectWithNegativeRadiusThrowsIllegalArgumentException() {
         // when
-        new SphericCoordinate(-Math.PI, -0.5 * Math.PI, -1e-12);
+        SphericCoordinate.getValueObject(-Math.PI, -0.5 * Math.PI, -1e-12);
     }
 
     @Test
-    public void testResultSetConstructor() throws SQLException {
+    public void testResultSetGetValueObject() throws SQLException {
         // given
         double phi = 9876.54321;
         double theta = 0.000001;
@@ -71,7 +74,7 @@ public class SphericCoordinateTest {
         when(mockedResultSet.getMetaData()).thenReturn(mockedMetaData);
 
         // when
-        SphericCoordinate coordinate = new SphericCoordinate(mockedResultSet);
+        SphericCoordinate coordinate = SphericCoordinate.getValueObject(mockedResultSet);
 
         // then
         assertEquals(phi, coordinate.getPhi(), 0.0);
@@ -83,16 +86,18 @@ public class SphericCoordinateTest {
         verify(mockedResultSet, times(1)).getDouble("coordinate_3");
         verify(mockedResultSet, atLeastOnce()).getMetaData();
         verifyNoMoreInteractions(mockedResultSet);
+
+        assertSame(SphericCoordinate.getValueObject(mockedResultSet), coordinate);
     }
 
     @Test(expected = NullPointerException.class)
-    public void testResultSetConstructorThrowsNullPointerException() throws SQLException {
+    public void testResultSetGetValueObjectThrowsNullPointerException() throws SQLException {
         // when
-        new SphericCoordinate(null);
+        SphericCoordinate.getValueObject(null);
     }
 
     @Test(expected = SQLException.class)
-    public void testResultSetConstructorThrowsSQLException() throws SQLException {
+    public void testResultSetGetValueObjectThrowsSQLException() throws SQLException {
         // given
         ResultSet mockedResultSet = mock(ResultSet.class);
         when(mockedResultSet.getDouble(anyString())).thenThrow(new SQLException());
@@ -101,11 +106,11 @@ public class SphericCoordinateTest {
         when(mockedResultSet.getMetaData()).thenReturn(mockedMetaData);
 
         // when
-        new SphericCoordinate(mockedResultSet);
+        SphericCoordinate.getValueObject(mockedResultSet);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testResultSetConstructorWithInvalidResultSetThrowsIllegalArgumentException() throws SQLException {
+    public void testResultSetGetValueObjectWithInvalidResultSetThrowsIllegalArgumentException() throws SQLException {
         // given
         ResultSet mockedResultSet = mock(ResultSet.class);
 
@@ -113,11 +118,11 @@ public class SphericCoordinateTest {
         when(mockedResultSet.getMetaData()).thenReturn(mockedMetaData);
 
         // when
-        new SphericCoordinate(mockedResultSet);
+        SphericCoordinate.getValueObject(mockedResultSet);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testResultSetConstructorWithNegativeRadiusThrowsIllegalArgumentException() throws SQLException {
+    public void testResultSetGetValueObjectWithNegativeRadiusThrowsIllegalArgumentException() throws SQLException {
         // given
         ResultSet mockedResultSet = mock(ResultSet.class);
         when(mockedResultSet.getDouble("coordinate_1")).thenReturn(-2*Math.PI);
@@ -128,7 +133,7 @@ public class SphericCoordinateTest {
         when(mockedResultSet.getMetaData()).thenReturn(mockedMetaData);
 
         // when
-        new SphericCoordinate(mockedResultSet);
+        SphericCoordinate.getValueObject(mockedResultSet);
     }
 
     @Test
@@ -137,7 +142,7 @@ public class SphericCoordinateTest {
         double phi = 99.0;
         double theta = 123.321;
         double radius = 1e-10;
-        SphericCoordinate coordinate = new SphericCoordinate(phi, theta, radius);
+        SphericCoordinate coordinate = SphericCoordinate.getValueObject(phi, theta, radius);
 
         ResultSet mockedResultSet = mock(ResultSet.class);
 
@@ -163,7 +168,7 @@ public class SphericCoordinateTest {
     @Test(expected = NullPointerException.class)
     public void testWriteOnThrowsNullPointerException() throws SQLException {
         // given
-        SphericCoordinate coordinate = new SphericCoordinate();
+        SphericCoordinate coordinate = SphericCoordinate.getValueObject();
 
         // when
         coordinate.writeOn(null);
@@ -172,7 +177,7 @@ public class SphericCoordinateTest {
     @Test(expected = SQLException.class)
     public void testWriteOnThrowsSQLException() throws SQLException {
         // given
-        SphericCoordinate coordinate = new SphericCoordinate();
+        SphericCoordinate coordinate = SphericCoordinate.getValueObject();
 
         ResultSet mockedResultSet = mock(ResultSet.class);
         doThrow(new SQLException()).when(mockedResultSet).updateDouble(anyString(), anyDouble());
@@ -187,7 +192,7 @@ public class SphericCoordinateTest {
     @Test(expected = IllegalArgumentException.class)
     public void testWriteOnThrowsIllegalArgumentException() throws SQLException {
         // given
-        SphericCoordinate coordinate = new SphericCoordinate();
+        SphericCoordinate coordinate = SphericCoordinate.getValueObject();
 
         ResultSet mockedResultSet = mock(ResultSet.class);
 
@@ -201,7 +206,7 @@ public class SphericCoordinateTest {
     @Test
     public void testGetType() {
         // given
-        SphericCoordinate coordinate = new SphericCoordinate();
+        SphericCoordinate coordinate = SphericCoordinate.getValueObject();
 
         // when
         CoordinateType type = coordinate.getType();
@@ -213,7 +218,7 @@ public class SphericCoordinateTest {
     @Test
     public void testAsCartesianCoordinate() {
         // given
-        SphericCoordinate sphericCoordinate = new SphericCoordinate(Math.PI / 4, -Math.acos(1 / Math.sqrt(3)), Math.sqrt(3));
+        SphericCoordinate sphericCoordinate = SphericCoordinate.getValueObject(Math.PI / 4, -Math.acos(1 / Math.sqrt(3)), Math.sqrt(3));
 
         // when
         CartesianCoordinate cartesianCoordinate = sphericCoordinate.asCartesianCoordinate();
@@ -227,7 +232,7 @@ public class SphericCoordinateTest {
     @Test
     public void testAsSphericCoordinate() {
         // given
-        SphericCoordinate coordinate = new SphericCoordinate();
+        SphericCoordinate coordinate = SphericCoordinate.getValueObject();
 
         // when
         SphericCoordinate otherCoordinate = coordinate.asSphericCoordinate();
@@ -239,8 +244,8 @@ public class SphericCoordinateTest {
     @Test
     public void testExactEquality() {
         // given
-        SphericCoordinate firstCoordinate = new CartesianCoordinate(7.654321, 8.7654321, 9.87654321).asSphericCoordinate();
-        SphericCoordinate secondCoordinate = new CartesianCoordinate(7.654321, 8.7654321, 9.87654321).asSphericCoordinate();
+        SphericCoordinate firstCoordinate = CartesianCoordinate.getValueObject(7.654321, 8.7654321, 9.87654321).asSphericCoordinate();
+        SphericCoordinate secondCoordinate = CartesianCoordinate.getValueObject(7.654321, 8.7654321, 9.87654321).asSphericCoordinate();
 
         // then
         assertEquals(firstCoordinate, secondCoordinate);
@@ -253,8 +258,8 @@ public class SphericCoordinateTest {
     @Test
     public void testJustEquality() {
         // given
-        SphericCoordinate firstCoordinate = new CartesianCoordinate(7.6543, 8.7654, 9.8765).asSphericCoordinate();
-        SphericCoordinate secondCoordinate = new CartesianCoordinate(7.6536, 8.7647, 9.8774).asSphericCoordinate();
+        SphericCoordinate firstCoordinate = CartesianCoordinate.getValueObject(7.6543, 8.7654, 9.8765).asSphericCoordinate();
+        SphericCoordinate secondCoordinate = CartesianCoordinate.getValueObject(7.6536, 8.7647, 9.8774).asSphericCoordinate();
 
         // then
         assertEquals(firstCoordinate, secondCoordinate);
@@ -267,8 +272,8 @@ public class SphericCoordinateTest {
     @Test
     public void testInequality() {
         // given
-        SphericCoordinate firstCoordinate = new CartesianCoordinate(9.87654321, 8.7654321, 7.654321).asSphericCoordinate();
-        SphericCoordinate secondCoordinate = new CartesianCoordinate(7.654321, 8.7654321, 9.87654321).asSphericCoordinate();
+        SphericCoordinate firstCoordinate = CartesianCoordinate.getValueObject(9.87654321, 8.7654321, 7.654321).asSphericCoordinate();
+        SphericCoordinate secondCoordinate = CartesianCoordinate.getValueObject(7.654321, 8.7654321, 9.87654321).asSphericCoordinate();
 
         // then
         assertNotEquals(firstCoordinate, secondCoordinate);
@@ -278,8 +283,8 @@ public class SphericCoordinateTest {
     @Test
     public void testAlmostEquality() {
         // given
-        SphericCoordinate firstCoordinate = new CartesianCoordinate(7.6543, 8.7654, 9.8765).asSphericCoordinate();
-        SphericCoordinate secondCoordinate = new CartesianCoordinate(7.6534, 8.7656, 9.8775).asSphericCoordinate();
+        SphericCoordinate firstCoordinate = CartesianCoordinate.getValueObject(7.6543, 8.7654, 9.8765).asSphericCoordinate();
+        SphericCoordinate secondCoordinate = CartesianCoordinate.getValueObject(7.6534, 8.7656, 9.8775).asSphericCoordinate();
 
         // then
         assertNotEquals(firstCoordinate, secondCoordinate);
@@ -289,7 +294,7 @@ public class SphericCoordinateTest {
     @Test
     public void testInequalityWithWrongType() {
         // given
-        SphericCoordinate firstCoordinate = new SphericCoordinate();
+        SphericCoordinate firstCoordinate = SphericCoordinate.getValueObject();
         Object object = new Object();
 
         // then
@@ -299,7 +304,7 @@ public class SphericCoordinateTest {
     @Test
     public void testEqualityToCartesianCoordinate() {
         // given
-        SphericCoordinate sphericCoordinate = new SphericCoordinate(Math.PI, -1.2341, 17.3134);
+        SphericCoordinate sphericCoordinate = SphericCoordinate.getValueObject(Math.PI, -1.2341, 17.3134);
         CartesianCoordinate cartesianCoordinate = sphericCoordinate.asCartesianCoordinate();
 
         // then

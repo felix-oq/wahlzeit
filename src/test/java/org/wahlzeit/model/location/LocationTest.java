@@ -77,9 +77,9 @@ public class LocationTest {
         assertTrue(location.coordinate instanceof CartesianCoordinate);
         CartesianCoordinate cartesianCoordinate = (CartesianCoordinate) location.coordinate;
 
-        assertEquals(x, cartesianCoordinate.getX(), 0.0);
-        assertEquals(y, cartesianCoordinate.getY(), 0.0);
-        assertEquals(z, cartesianCoordinate.getZ(), 0.0);
+        assertEquals(x, cartesianCoordinate.getX(), 0.001);
+        assertEquals(y, cartesianCoordinate.getY(), 0.001);
+        assertEquals(z, cartesianCoordinate.getZ(), 0.001);
 
         verify(mockedResultSet, times(1)).getInt("coordinate_type");
         verify(mockedResultSet, times(1)).getDouble("coordinate_1");

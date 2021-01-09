@@ -88,9 +88,9 @@ public class PhotoTest {
         assertTrue(photo.location.coordinate instanceof CartesianCoordinate);
         CartesianCoordinate cartesianCoordinate = (CartesianCoordinate) photo.location.coordinate;
 
-        assertEquals(coordinateX, cartesianCoordinate.getX(), 0.0);
-        assertEquals(coordinateY, cartesianCoordinate.getY(), 0.0);
-        assertEquals(coordinateZ, cartesianCoordinate.getZ(), 0.0);
+        assertEquals(coordinateX, cartesianCoordinate.getX(), 0.001);
+        assertEquals(coordinateY, cartesianCoordinate.getY(), 0.001);
+        assertEquals(coordinateZ, cartesianCoordinate.getZ(), 0.001);
     }
 
     @Test(expected = SQLException.class)
@@ -152,7 +152,7 @@ public class PhotoTest {
         int praiseSum = 2;
         int noVotes = 0;
         long creationTime = 999L;
-        double coordinateX = 0.0024;
+        double coordinateX = 0.24;
         double coordinateY = 10423.43;
         double coordinateZ = -1.2;
 
@@ -171,7 +171,7 @@ public class PhotoTest {
         photo.praiseSum = praiseSum;
         photo.noVotes = noVotes;
         photo.creationTime = creationTime;
-        CartesianCoordinate coordinate = new CartesianCoordinate(coordinateX, coordinateY, coordinateZ);
+        CartesianCoordinate coordinate = CartesianCoordinate.getValueObject(coordinateX, coordinateY, coordinateZ);
         photo.location = new Location(coordinate);
 
         ResultSet mockedResultSet = mock(ResultSet.class);

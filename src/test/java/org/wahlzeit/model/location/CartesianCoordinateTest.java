@@ -13,42 +13,45 @@ import static org.mockito.Mockito.*;
 public class CartesianCoordinateTest {
 
     @Test
-    public void testDefaultConstructor() {
+    public void testDefaultGetValueObject() {
         // when
-        CartesianCoordinate coordinate = new CartesianCoordinate();
+        CartesianCoordinate coordinate = CartesianCoordinate.getValueObject();
 
         // then
         assertEquals(0.0, coordinate.getX(), 0.0);
         assertEquals(0.0, coordinate.getY(), 0.0);
         assertEquals(0.0, coordinate.getZ(), 0.0);
 
-        assertEquals(new CartesianCoordinate(0.0, 0.0, 0.0), coordinate);
+        assertEquals(CartesianCoordinate.getValueObject(0.0, 0.0, 0.0), coordinate);
+        assertSame(CartesianCoordinate.getValueObject(0.0, 0.0, 0.0), coordinate);
     }
 
     @Test
-    public void testComponentConstructor() {
+    public void testComponentGetValueObject() {
         // given
         double x = 0.42;
         double y = 123.456;
         double z = 3.1415;
 
         // when
-        CartesianCoordinate coordinate = new CartesianCoordinate(x, y, z);
+        CartesianCoordinate coordinate = CartesianCoordinate.getValueObject(x, y, z);
 
         // then
-        assertEquals(x, coordinate.getX(), 0.0);
-        assertEquals(y, coordinate.getY(), 0.0);
-        assertEquals(z, coordinate.getZ(), 0.0);
+        assertEquals(x, coordinate.getX(), 0.001);
+        assertEquals(y, coordinate.getY(), 0.001);
+        assertEquals(z, coordinate.getZ(), 0.001);
+
+        assertSame(CartesianCoordinate.getValueObject(x, y, z), coordinate);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testComponentConstructorThrowsIllegalArgumentException() {
+    public void testComponentGetValueObjectThrowsIllegalArgumentException() {
         // when
-        new CartesianCoordinate(Double.NaN, Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY);
+        CartesianCoordinate.getValueObject(Double.NaN, Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY);
     }
 
     @Test
-    public void testResultSetConstructor() throws SQLException {
+    public void testResultSetGetValueObject() throws SQLException {
         // given
         double x = 9876.54321;
         double y = 0.000001;
@@ -63,28 +66,30 @@ public class CartesianCoordinateTest {
         when(mockedResultSet.getMetaData()).thenReturn(mockedMetaData);
 
         // when
-        CartesianCoordinate coordinate = new CartesianCoordinate(mockedResultSet);
+        CartesianCoordinate coordinate = CartesianCoordinate.getValueObject(mockedResultSet);
 
         // then
-        assertEquals(x, coordinate.getX(), 0.0);
-        assertEquals(y, coordinate.getY(), 0.0);
-        assertEquals(z, coordinate.getZ(), 0.0);
+        assertEquals(x, coordinate.getX(), 0.001);
+        assertEquals(y, coordinate.getY(), 0.001);
+        assertEquals(z, coordinate.getZ(), 0.001);
 
         verify(mockedResultSet, times(1)).getDouble("coordinate_1");
         verify(mockedResultSet, times(1)).getDouble("coordinate_2");
         verify(mockedResultSet, times(1)).getDouble("coordinate_3");
         verify(mockedResultSet, atLeastOnce()).getMetaData();
         verifyNoMoreInteractions(mockedResultSet);
+
+        assertSame(CartesianCoordinate.getValueObject(mockedResultSet), coordinate);
     }
 
     @Test(expected = NullPointerException.class)
-    public void testResultSetConstructorThrowsNullPointerException() throws SQLException {
+    public void testResultSetGetValueObjectThrowsNullPointerException() throws SQLException {
         // when
-        new CartesianCoordinate(null);
+        CartesianCoordinate.getValueObject(null);
     }
 
     @Test(expected = SQLException.class)
-    public void testResultSetConstructorThrowsSQLException() throws SQLException {
+    public void testResultSetGetValueObjectThrowsSQLException() throws SQLException {
         // given
         ResultSet mockedResultSet = mock(ResultSet.class);
         when(mockedResultSet.getDouble(anyString())).thenThrow(new SQLException());
@@ -93,11 +98,11 @@ public class CartesianCoordinateTest {
         when(mockedResultSet.getMetaData()).thenReturn(mockedMetaData);
 
         // when
-        new CartesianCoordinate(mockedResultSet);
+        CartesianCoordinate.getValueObject(mockedResultSet);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testResultSetConstructorThrowsIllegalArgumentException() throws SQLException {
+    public void testResultSetGetValueObjectThrowsIllegalArgumentException() throws SQLException {
         // given
         ResultSet mockedResultSet = mock(ResultSet.class);
 
@@ -105,7 +110,7 @@ public class CartesianCoordinateTest {
         when(mockedResultSet.getMetaData()).thenReturn(mockedMetaData);
 
         // when
-        new CartesianCoordinate(mockedResultSet);
+        CartesianCoordinate.getValueObject(mockedResultSet);
     }
 
     @Test
@@ -113,8 +118,8 @@ public class CartesianCoordinateTest {
         // given
         double x = 99.0;
         double y = 123.321;
-        double z = 1e-10;
-        CartesianCoordinate coordinate = new CartesianCoordinate(x, y, z);
+        double z = 0.01;
+        CartesianCoordinate coordinate = CartesianCoordinate.getValueObject(x, y, z);
 
         ResultSet mockedResultSet = mock(ResultSet.class);
 
@@ -140,7 +145,7 @@ public class CartesianCoordinateTest {
     @Test(expected = NullPointerException.class)
     public void testWriteOnThrowsNullPointerException() throws SQLException {
         // given
-        CartesianCoordinate coordinate = new CartesianCoordinate();
+        CartesianCoordinate coordinate = CartesianCoordinate.getValueObject();
 
         // when
         coordinate.writeOn(null);
@@ -149,7 +154,7 @@ public class CartesianCoordinateTest {
     @Test(expected = SQLException.class)
     public void testWriteOnThrowsSQLException() throws SQLException {
         // given
-        CartesianCoordinate coordinate = new CartesianCoordinate();
+        CartesianCoordinate coordinate = CartesianCoordinate.getValueObject();
 
         ResultSet mockedResultSet = mock(ResultSet.class);
         doThrow(new SQLException()).when(mockedResultSet).updateDouble(anyString(), anyDouble());
@@ -164,7 +169,7 @@ public class CartesianCoordinateTest {
     @Test(expected = IllegalArgumentException.class)
     public void testWriteOnThrowsIllegalArgumentException() throws SQLException {
         // given
-        CartesianCoordinate coordinate = new CartesianCoordinate();
+        CartesianCoordinate coordinate = CartesianCoordinate.getValueObject();
 
         ResultSet mockedResultSet = mock(ResultSet.class);
 
@@ -178,7 +183,7 @@ public class CartesianCoordinateTest {
     @Test
     public void testGetType() {
         // given
-        CartesianCoordinate coordinate = new CartesianCoordinate();
+        CartesianCoordinate coordinate = CartesianCoordinate.getValueObject();
 
         // when
         CoordinateType type = coordinate.getType();
@@ -190,7 +195,7 @@ public class CartesianCoordinateTest {
     @Test
     public void testAsCartesianCoordinate() {
         // given
-        CartesianCoordinate coordinate = new CartesianCoordinate();
+        CartesianCoordinate coordinate = CartesianCoordinate.getValueObject();
 
         // when
         CartesianCoordinate otherCoordinate = coordinate.asCartesianCoordinate();
@@ -202,7 +207,7 @@ public class CartesianCoordinateTest {
     @Test
     public void testAsSphericCoordinate() {
         // given
-        CartesianCoordinate cartesianCoordinate = new CartesianCoordinate(1, -1, 1);
+        CartesianCoordinate cartesianCoordinate = CartesianCoordinate.getValueObject(1, -1, 1);
 
         // when
         SphericCoordinate sphericCoordinate = cartesianCoordinate.asSphericCoordinate();
@@ -216,7 +221,7 @@ public class CartesianCoordinateTest {
     @Test
     public void testAsSphericCoordinatePreventsDivisionByZero() {
         // given
-        CartesianCoordinate cartesianCoordinate = new CartesianCoordinate(0, 0, 0);
+        CartesianCoordinate cartesianCoordinate = CartesianCoordinate.getValueObject(0, 0, 0);
 
         // when
         SphericCoordinate sphericCoordinate = cartesianCoordinate.asSphericCoordinate();
@@ -230,8 +235,8 @@ public class CartesianCoordinateTest {
     @Test
     public void testExactEquality() {
         // given
-        CartesianCoordinate firstCoordinate = new CartesianCoordinate(7.654321, 8.7654321, 9.87654321);
-        CartesianCoordinate secondCoordinate = new CartesianCoordinate(7.654321, 8.7654321, 9.87654321);
+        CartesianCoordinate firstCoordinate = CartesianCoordinate.getValueObject(7.654321, 8.7654321, 9.87654321);
+        CartesianCoordinate secondCoordinate = CartesianCoordinate.getValueObject(7.654321, 8.7654321, 9.87654321);
 
         // then
         assertEquals(firstCoordinate, secondCoordinate);
@@ -244,8 +249,8 @@ public class CartesianCoordinateTest {
     @Test
     public void testJustEquality() {
         // given
-        CartesianCoordinate firstCoordinate = new CartesianCoordinate(7.6543, 8.7654, 9.8765);
-        CartesianCoordinate secondCoordinate = new CartesianCoordinate(7.6536, 8.7647, 9.8774);
+        CartesianCoordinate firstCoordinate = CartesianCoordinate.getValueObject(7.6543, 8.7654, 9.8765);
+        CartesianCoordinate secondCoordinate = CartesianCoordinate.getValueObject(7.6536, 8.7647, 9.8774);
 
         // then
         assertEquals(firstCoordinate, secondCoordinate);
@@ -258,8 +263,8 @@ public class CartesianCoordinateTest {
     @Test
     public void testInequality() {
         // given
-        Coordinate firstCoordinate = new CartesianCoordinate(9.87654321, 8.7654321, 7.654321);
-        CartesianCoordinate secondCoordinate = new CartesianCoordinate(7.654321, 8.7654321, 9.87654321);
+        Coordinate firstCoordinate = CartesianCoordinate.getValueObject(9.87654321, 8.7654321, 7.654321);
+        CartesianCoordinate secondCoordinate = CartesianCoordinate.getValueObject(7.654321, 8.7654321, 9.87654321);
 
         // then
         assertNotEquals(firstCoordinate, secondCoordinate);
@@ -269,8 +274,8 @@ public class CartesianCoordinateTest {
     @Test
     public void testAlmostEquality() {
         // given
-        Coordinate firstCoordinate = new CartesianCoordinate(7.6543, 8.7654, 9.8765);
-        CartesianCoordinate secondCoordinate = new CartesianCoordinate(7.6534, 8.7656, 9.8775);
+        Coordinate firstCoordinate = CartesianCoordinate.getValueObject(7.6543, 8.7654, 9.8765);
+        CartesianCoordinate secondCoordinate = CartesianCoordinate.getValueObject(7.6534, 8.7656, 9.8775);
 
         // then
         assertNotEquals(firstCoordinate, secondCoordinate);
@@ -280,7 +285,7 @@ public class CartesianCoordinateTest {
     @Test
     public void testInequalityWithWrongType() {
         // given
-        Coordinate firstCoordinate = new CartesianCoordinate();
+        Coordinate firstCoordinate = CartesianCoordinate.getValueObject();
         Object object = new Object();
 
         // then
@@ -290,7 +295,7 @@ public class CartesianCoordinateTest {
     @Test
     public void testEqualityToSphericCoordinate() {
         // given
-        CartesianCoordinate cartesianCoordinate = new CartesianCoordinate(0.004233, -100.234112, 5.876342);
+        CartesianCoordinate cartesianCoordinate = CartesianCoordinate.getValueObject(0.004233, -100.234112, 5.876342);
         SphericCoordinate sphericCoordinate = cartesianCoordinate.asSphericCoordinate();
 
         // then

@@ -7,12 +7,6 @@ import java.util.Objects;
 
 public abstract class AbstractCoordinate implements Coordinate {
 
-    /**
-     * The number of decimal places for the cartesian coordinate components x,y,z that are considered, when two
-     * coordinates are checked to be equal or not.
-     */
-    private static final int DECIMAL_PLACES_FOR_EQUALITY = 3;
-
     protected abstract void assertClassInvariants();
 
     protected static void assertResultSetHasCoordinateColumns(ResultSet rset) throws SQLException {
@@ -121,28 +115,14 @@ public abstract class AbstractCoordinate implements Coordinate {
         CartesianCoordinate thisAsCartesianCoordinate = this.asCartesianCoordinate();
         CartesianCoordinate otherAsCartesianCoordinate = otherCoordinate.asCartesianCoordinate();
 
-        double roundedX = roundToDecimalPlaces(thisAsCartesianCoordinate.getX(), DECIMAL_PLACES_FOR_EQUALITY);
-        double otherRoundedX = roundToDecimalPlaces(otherAsCartesianCoordinate.getX(), DECIMAL_PLACES_FOR_EQUALITY);
-
-        double roundedY = roundToDecimalPlaces(thisAsCartesianCoordinate.getY(), DECIMAL_PLACES_FOR_EQUALITY);
-        double otherRoundedY = roundToDecimalPlaces(otherAsCartesianCoordinate.getY(), DECIMAL_PLACES_FOR_EQUALITY);
-
-        double roundedZ = roundToDecimalPlaces(thisAsCartesianCoordinate.getZ(), DECIMAL_PLACES_FOR_EQUALITY);
-        double otherRoundedZ = roundToDecimalPlaces(otherAsCartesianCoordinate.getZ(), DECIMAL_PLACES_FOR_EQUALITY);
-
-        boolean isEqual = roundedX == otherRoundedX &&
-                roundedY == otherRoundedY &&
-                roundedZ == otherRoundedZ;
+        // since coordinates are value objects now, compare the object pointers for equality
+        // the coordinate representation must be the same for both objects though
+        boolean isEqual = (thisAsCartesianCoordinate == otherAsCartesianCoordinate);
 
         // invariant
         assertClassInvariants();
 
         return isEqual;
-    }
-
-    private double roundToDecimalPlaces(double toRound, int decimalPlaces) {
-        double shiftingFactor = Math.pow(10, decimalPlaces);
-        return Math.round(toRound * shiftingFactor) / shiftingFactor;
     }
 
     @Override
@@ -166,14 +146,11 @@ public abstract class AbstractCoordinate implements Coordinate {
         // invariant
         assertClassInvariants();
 
+        // always compute the hashcode from cartesian coordinate representation for consistency among different coordinate representations
         CartesianCoordinate thisAsCartesianCoordinate = this.asCartesianCoordinate();
-
-        // use the rounded x-, y-, and z-components for hash computation, otherwise objects that are equal would not
-        // have the same hash code
-        int hashCode = Objects.hash(
-                roundToDecimalPlaces(thisAsCartesianCoordinate.getX(), DECIMAL_PLACES_FOR_EQUALITY),
-                roundToDecimalPlaces(thisAsCartesianCoordinate.getY(), DECIMAL_PLACES_FOR_EQUALITY),
-                roundToDecimalPlaces(thisAsCartesianCoordinate.getZ(), DECIMAL_PLACES_FOR_EQUALITY));
+        int hashCode = Objects.hash(thisAsCartesianCoordinate.getX(),
+                thisAsCartesianCoordinate.getY(),
+                thisAsCartesianCoordinate.getZ());
 
         // invariant
         assertClassInvariants();

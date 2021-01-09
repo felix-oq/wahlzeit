@@ -86,9 +86,9 @@ public class AbstractCoordinateTest {
         AbstractCoordinate mockedSecondAbstractCoordinate = mock(AbstractCoordinate.class, CALLS_REAL_METHODS);
 
         when(mockedFirstAbstractCoordinate.asCartesianCoordinate())
-                .thenReturn(new CartesianCoordinate(-0.562, 101.35, -121.421));
+                .thenReturn(CartesianCoordinate.getValueObject(-0.562, 101.35, -121.421));
         when(mockedSecondAbstractCoordinate.asCartesianCoordinate())
-                .thenReturn(new CartesianCoordinate(0.438, -14.1343542, -5.0));
+                .thenReturn(CartesianCoordinate.getValueObject(0.438, -14.1343542, -5.0));
 
         // when
         double distanceFirstToSecond = mockedFirstAbstractCoordinate.getCartesianDistance(mockedSecondAbstractCoordinate);
@@ -96,7 +96,7 @@ public class AbstractCoordinateTest {
 
         // then
         assertEquals(distanceFirstToSecond, distanceSecondToFirst, 0.0);
-        assertEquals(163.9862351113381, distanceFirstToSecond, 1e-12);
+        assertEquals(163.98598567255678, distanceFirstToSecond, 1e-12);
     }
 
     @Test(expected = NullPointerException.class)
@@ -115,9 +115,9 @@ public class AbstractCoordinateTest {
         AbstractCoordinate mockedSecondAbstractCoordinate = mock(AbstractCoordinate.class, CALLS_REAL_METHODS);
 
         when(mockedFirstAbstractCoordinate.asSphericCoordinate())
-                .thenReturn(new SphericCoordinate(Math.PI/4, Math.PI / 2, 42));
+                .thenReturn(SphericCoordinate.getValueObject(Math.PI/4, Math.PI / 2, 42));
         when(mockedSecondAbstractCoordinate.asSphericCoordinate())
-                .thenReturn(new SphericCoordinate(-3 * Math.PI/4, 0, 24));
+                .thenReturn(SphericCoordinate.getValueObject(-3 * Math.PI/4, 0, 24));
 
         // when
         double centralAngleFirstToSecond = mockedFirstAbstractCoordinate.getCentralAngle(mockedSecondAbstractCoordinate);
@@ -145,9 +145,9 @@ public class AbstractCoordinateTest {
         AbstractCoordinate mockedSecondAbstractCoordinate = mock(AbstractCoordinate.class, CALLS_REAL_METHODS);
 
         when(mockedFirstAbstractCoordinate.asCartesianCoordinate())
-                .thenReturn(new CartesianCoordinate(7.654321, 8.7654321, 9.87654321));
+                .thenReturn(CartesianCoordinate.getValueObject(7.654321, 8.7654321, 9.87654321));
         when(mockedSecondAbstractCoordinate.asCartesianCoordinate())
-                .thenReturn(new CartesianCoordinate(7.654321, 8.7654321, 9.87654321));
+                .thenReturn(CartesianCoordinate.getValueObject(7.654321, 8.7654321, 9.87654321));
 
         // then
         assertTrue(mockedFirstAbstractCoordinate.isEqual(mockedSecondAbstractCoordinate));
@@ -161,9 +161,9 @@ public class AbstractCoordinateTest {
         AbstractCoordinate mockedSecondAbstractCoordinate = mock(AbstractCoordinate.class, CALLS_REAL_METHODS);
 
         when(mockedFirstAbstractCoordinate.asCartesianCoordinate())
-                .thenReturn(new CartesianCoordinate(7.6543, 8.7654, 9.8765));
+                .thenReturn(CartesianCoordinate.getValueObject(7.6543, 8.7654, 9.8765));
         when(mockedSecondAbstractCoordinate.asCartesianCoordinate())
-                .thenReturn(new CartesianCoordinate(7.6536, 8.7647, 9.8774));
+                .thenReturn(CartesianCoordinate.getValueObject(7.6536, 8.7647, 9.8774));
 
         // then
         assertTrue(mockedFirstAbstractCoordinate.isEqual(mockedSecondAbstractCoordinate));
@@ -177,9 +177,9 @@ public class AbstractCoordinateTest {
         AbstractCoordinate mockedSecondAbstractCoordinate = mock(AbstractCoordinate.class, CALLS_REAL_METHODS);
 
         when(mockedFirstAbstractCoordinate.asCartesianCoordinate())
-                .thenReturn(new CartesianCoordinate(9.87654321, 8.7654321, 7.654321));
+                .thenReturn(CartesianCoordinate.getValueObject(9.87654321, 8.7654321, 7.654321));
         when(mockedSecondAbstractCoordinate.asCartesianCoordinate())
-                .thenReturn(new CartesianCoordinate(7.654321, 8.7654321, 9.87654321));
+                .thenReturn(CartesianCoordinate.getValueObject(7.654321, 8.7654321, 9.87654321));
 
         // then
         assertFalse(mockedFirstAbstractCoordinate.isEqual(mockedSecondAbstractCoordinate));
@@ -193,9 +193,9 @@ public class AbstractCoordinateTest {
         AbstractCoordinate mockedSecondAbstractCoordinate = mock(AbstractCoordinate.class, CALLS_REAL_METHODS);
 
         when(mockedFirstAbstractCoordinate.asCartesianCoordinate())
-                .thenReturn(new CartesianCoordinate(7.6543, 8.7654, 9.8765));
+                .thenReturn(CartesianCoordinate.getValueObject(7.6543, 8.7654, 9.8765));
         when(mockedSecondAbstractCoordinate.asCartesianCoordinate())
-                .thenReturn(new CartesianCoordinate(7.6534, 8.7656, 9.8775));
+                .thenReturn(CartesianCoordinate.getValueObject(7.6534, 8.7656, 9.8775));
 
         // then
         assertFalse(mockedFirstAbstractCoordinate.isEqual(mockedSecondAbstractCoordinate));

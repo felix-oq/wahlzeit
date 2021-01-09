@@ -19,7 +19,7 @@ public class Location {
      * @methodtype constructor
      */
     public Location() {
-        this.coordinate = new CartesianCoordinate();
+        this.coordinate = CartesianCoordinate.getValueObject();
     }
 
     /**
@@ -60,10 +60,10 @@ public class Location {
         // could be handled by an own factory class in the future
         switch(coordinateType) {
             case Cartesian: {
-                return new CartesianCoordinate(rset);
+                return CartesianCoordinate.getValueObject(rset);
             }
             case Spheric: {
-                return new SphericCoordinate(rset);
+                return SphericCoordinate.getValueObject(rset);
             }
             default: {
                 // should not happen if the cases above are complete
