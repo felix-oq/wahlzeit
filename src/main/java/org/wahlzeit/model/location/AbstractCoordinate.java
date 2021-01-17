@@ -1,10 +1,14 @@
 package org.wahlzeit.model.location;
 
 import org.wahlzeit.utils.Assertions;
+import org.wahlzeit.utils.patterns.Pattern;
+import org.wahlzeit.utils.patterns.PatternInstance;
+import org.wahlzeit.utils.patterns.PatternParticipant;
 
 import java.sql.*;
 import java.util.Objects;
 
+@PatternInstance(pattern = Pattern.TemplateMethod, role = PatternParticipant.AbstractClass)
 public abstract class AbstractCoordinate implements Coordinate {
 
     protected abstract void assertClassInvariants();
@@ -29,6 +33,7 @@ public abstract class AbstractCoordinate implements Coordinate {
         // invariant
         assertClassInvariants();
     }
+
 
     protected abstract void doWriteOn(ResultSet rset) throws SQLException;
 

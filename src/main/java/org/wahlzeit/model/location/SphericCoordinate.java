@@ -1,6 +1,9 @@
 package org.wahlzeit.model.location;
 
 import org.wahlzeit.utils.Assertions;
+import org.wahlzeit.utils.patterns.Pattern;
+import org.wahlzeit.utils.patterns.PatternInstance;
+import org.wahlzeit.utils.patterns.PatternParticipant;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -10,6 +13,7 @@ import java.util.Optional;
 /**
  * This class represents a point in a three dimensional space using spheric coordinates.
  */
+@PatternInstance(pattern = Pattern.TemplateMethod, role = PatternParticipant.ConcreteClass)
 public class SphericCoordinate extends AbstractCoordinate {
 
     private final double phi;

@@ -27,10 +27,14 @@ import java.util.*;
 import org.wahlzeit.main.*;
 import org.wahlzeit.model.gaming.GamingPhotoManager;
 import org.wahlzeit.services.*;
+import org.wahlzeit.utils.patterns.Pattern;
+import org.wahlzeit.utils.patterns.PatternInstance;
+import org.wahlzeit.utils.patterns.PatternParticipant;
 
 /**
  * A photo manager provides access to and manages photos.
  */
+@PatternInstance(pattern = Pattern.Singleton, role = PatternParticipant.Singleton)
 public class PhotoManager extends ObjectManager {
 	
 	/**

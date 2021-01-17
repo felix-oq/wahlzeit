@@ -25,10 +25,14 @@ import javax.mail.*;
 import javax.mail.internet.*;
 
 import org.wahlzeit.services.EmailAddress;
+import org.wahlzeit.utils.patterns.Pattern;
+import org.wahlzeit.utils.patterns.PatternInstance;
+import org.wahlzeit.utils.patterns.PatternParticipant;
 
 /**
  * 
  */
+@PatternInstance(pattern = Pattern.Decorator, role = PatternParticipant.ConcreteComponent)
 public class SmtpEmailService extends AbstractEmailService {
 	
 	/**

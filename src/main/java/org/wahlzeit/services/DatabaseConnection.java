@@ -20,6 +20,10 @@
 
 package org.wahlzeit.services;
 
+import org.wahlzeit.utils.patterns.Pattern;
+import org.wahlzeit.utils.patterns.PatternInstance;
+import org.wahlzeit.utils.patterns.PatternParticipant;
+
 import java.sql.*;
 import java.util.*;
 
@@ -30,6 +34,8 @@ import java.util.*;
  * @author dirkriehle
  *
  */
+@PatternInstance(pattern = Pattern.ObjectPool, role = PatternParticipant.ReusablePool) // the static parts of the class
+@PatternInstance(pattern = Pattern.ObjectPool, role = PatternParticipant.Reusable) // the non-static parts of the class
 public class DatabaseConnection {
 	
 	/**
