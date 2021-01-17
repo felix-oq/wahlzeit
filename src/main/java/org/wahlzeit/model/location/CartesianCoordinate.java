@@ -17,9 +17,9 @@ public class CartesianCoordinate extends AbstractCoordinate {
      */
     private static final int DECIMAL_PLACES_FOR_EQUALITY = 3;
 
-    private double x;
-    private double y;
-    private double z;
+    private final double x;
+    private final double y;
+    private final double z;
 
     private static final HashSet<CartesianCoordinate> cartesianCoordinates = new HashSet<>();
 
