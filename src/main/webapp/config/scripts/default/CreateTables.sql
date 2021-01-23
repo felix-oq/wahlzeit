@@ -35,7 +35,7 @@ CREATE TABLE photos (
 	coordinate_2 double precision,
 	coordinate_3 double precision,
 	game_title text,
-	game_genre integer,
+	game_type text,
 	game_release date
 );
 

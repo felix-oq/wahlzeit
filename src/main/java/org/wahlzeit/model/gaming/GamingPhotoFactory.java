@@ -33,7 +33,9 @@ public class GamingPhotoFactory extends PhotoFactory {
      */
     private VideoGame createDummyVideoGame() {
         Random random = new Random();
-        return new VideoGame("Dummy-" + random.nextInt(), VideoGameGenre.Unknown, new Date(random.nextInt()));
+        return VideoGameManager.getInstance().createInstance("Dummy-" + random.nextInt(),
+                "",
+                new Date(random.nextInt()));
     }
 
 }

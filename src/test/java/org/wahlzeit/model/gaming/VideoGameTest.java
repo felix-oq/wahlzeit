@@ -27,7 +27,7 @@ public class VideoGameTest {
     @Test(expected = IllegalArgumentException.class)
     public void testAttributeConstructorThrowsIllegalArgumentException() {
         // when
-        new VideoGame("  \t ", VideoGameGenre.Unknown, new Date(0L));
+        new VideoGame("  \t ", new VideoGameType(""), new Date(0L));
     }
 
     @Test(expected = SQLException.class)
@@ -78,21 +78,6 @@ public class VideoGameTest {
         new VideoGame(null);
     }
 
-    @Test(expected = IndexOutOfBoundsException.class)
-    public void testResultSetConstructorThrowsIndexOutOfBoundsException() throws SQLException {
-        // given
-        ResultSet mockedResultSet = mock(ResultSet.class);
-        when(mockedResultSet.getString(anyString())).thenReturn("dummy");
-        when(mockedResultSet.getInt(anyString())).thenReturn(VideoGameGenre.values().length);
-        when(mockedResultSet.getDate(anyString())).thenReturn(new Date(0L));
-
-        ResultSetMetaData mockedMetaData = ResultSetMockingUtils.createValidResultSetMetaDataMock();
-        when(mockedResultSet.getMetaData()).thenReturn(mockedMetaData);
-
-        // when
-        new VideoGame(mockedResultSet);
-    }
-
     @Test(expected = SQLException.class)
     public void testWriteOnThrowsSQLException() throws SQLException {
         /// given
@@ -104,7 +89,7 @@ public class VideoGameTest {
         ResultSetMetaData mockedMetaData = ResultSetMockingUtils.createValidResultSetMetaDataMock();
         when(mockedResultSet.getMetaData()).thenReturn(mockedMetaData);
 
-        VideoGame videoGame = new VideoGame("dummy", VideoGameGenre.Unknown, new Date(0));
+        VideoGame videoGame = new VideoGame("dummy", new VideoGameType(""), new Date(0));
 
         // when
         videoGame.writeOn(mockedResultSet);
@@ -118,7 +103,7 @@ public class VideoGameTest {
         ResultSetMetaData mockedMetaData = ResultSetMockingUtils.createInvalidResultSetMetaDataMock();
         when(mockedResultSet.getMetaData()).thenReturn(mockedMetaData);
 
-        VideoGame videoGame = new VideoGame("dummy", VideoGameGenre.Unknown, new Date(0));
+        VideoGame videoGame = new VideoGame("dummy", new VideoGameType(""), new Date(0));
 
         // when
         videoGame.writeOn(mockedResultSet);
@@ -126,7 +111,7 @@ public class VideoGameTest {
 
     @Test(expected = NullPointerException.class)
     public void testWriteOnThrowsNullPointerException() throws SQLException {
-        VideoGame videoGame = new VideoGame("dummy", VideoGameGenre.Unknown, new Date(0));
+        VideoGame videoGame = new VideoGame("dummy", new VideoGameType(""), new Date(0));
 
         // when
         videoGame.writeOn(null);

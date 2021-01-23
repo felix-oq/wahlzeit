@@ -48,7 +48,7 @@ public class GamingPhoto extends Photo {
         super.readFrom(rset);
 
         try {
-            videoGame = new VideoGame(rset);
+            videoGame = VideoGameManager.getInstance().createInstance(rset);
         } catch (IllegalArgumentException illegalArgumentException) {
             throw new SQLException("Unable to read the video game data for the photo" +
                     " due to missing columns, wrong column types in the database or a blank video game title",

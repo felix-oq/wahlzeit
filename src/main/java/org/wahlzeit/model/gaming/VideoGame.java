@@ -14,27 +14,27 @@ import java.util.Objects;
 public class VideoGame {
 
     private final String title;
-    private final VideoGameGenre genre;
+    private final VideoGameType type;
     private final Date release;
 
     /**
      * Constructor that initializes the fields of this class with the provided arguments.
      * @param title the title of the video game
-     * @param genre the genre of the video game
+     * @param type the type of the video game
      * @param release the release date of the video game
      * @throws NullPointerException if any of the arguments is null
      * @throws IllegalArgumentException if the video game title is blank
      */
-    public VideoGame(String title, VideoGameGenre genre, Date release) {
+    public VideoGame(String title, VideoGameType type, Date release) {
         Assertions.checkNotNull(title, "The video game title must not be null");
         Assertions.checkStringArgumentIsNotBlank(title, "The video game title must not be blank");
 
-        Assertions.checkNotNull(genre, "The video game genre must not be null");
+        Assertions.checkNotNull(type, "The video game genre must not be null");
 
         Assertions.checkNotNull(release, "The video game release date must not be null");
 
         this.title = title;
-        this.genre = genre;
+        this.type = type;
         this.release = release;
     }
 
@@ -46,7 +46,6 @@ public class VideoGame {
      *                                  respective types
      *                                  or if the video game title contained in the result set is blank
      * @throws NullPointerException if the argument is null
-     * @throws IndexOutOfBoundsException if the ordinal number of the video game genre in the result set is out of bounds
      */
     public VideoGame(ResultSet rset) throws SQLException {
         Assertions.checkNotNull(rset, "The result set must not be null");
@@ -56,13 +55,8 @@ public class VideoGame {
 
         Assertions.checkStringArgumentIsNotBlank(this.title, "The video game title must not be blank");
 
-        VideoGameGenre[] videoGameGenres = VideoGameGenre.values();
-        int videoGameGenreIndex = rset.getInt("game_genre");
-
-        Assertions.checkInRange(videoGameGenreIndex, videoGameGenres.length,
-                "The ordinal number for the video game genre in the given result set is not in range");
-
-        this.genre = videoGameGenres[videoGameGenreIndex];
+        String typePath = rset.getString("game_type");
+        this.type = VideoGameManager.getInstance().getVideoGameType(typePath);
 
         this.release = rset.getDate("game_release");
     }
@@ -80,7 +74,10 @@ public class VideoGame {
         assertResultSetHasVideoGameColumns(rset);
 
         rset.updateString("game_title", title);
-        rset.updateInt("game_genre", genre.ordinal());
+
+        String typePath = VideoGameManager.getInstance().getPathString(type);
+        rset.updateString("game_type", typePath);
+
         rset.updateDate("game_release", release);
     }
 
@@ -96,21 +93,21 @@ public class VideoGame {
         if (o == null || getClass() != o.getClass()) return false;
         VideoGame videoGame = (VideoGame) o;
         return Objects.equals(title, videoGame.title) &&
-                genre == videoGame.genre &&
+                type == videoGame.type &&
                 Objects.equals(release, videoGame.release);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(title, genre, release);
+        return Objects.hash(title, type, release);
     }
 
     public String getTitle() {
         return title;
     }
 
-    public VideoGameGenre getGenre() {
-        return genre;
+    public VideoGameType getType() {
+        return type;
     }
 
     public Date getRelease() {
