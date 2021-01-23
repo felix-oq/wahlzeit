@@ -8,6 +8,9 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Optional;
 
+/**
+ * This class creates video game instances and manages their video game type instances.
+ */
 public class VideoGameManager {
 
     public static final String ROOT_TYPE_NAME = "RootType";
@@ -28,15 +31,41 @@ public class VideoGameManager {
         return instance;
     }
 
+    /**
+     * Creates a video game instance.
+     * @param title the title of the video game
+     * @param typePath the type path for the type of the video game
+     * @param release the release date of the video game
+     * @throws NullPointerException if any of the arguments is null
+     * @throws IllegalArgumentException if the video game title is blank
+     */
     public VideoGame createInstance(String title, String typePath, Date release) {
         VideoGameType type = getVideoGameType(typePath);
         return new VideoGame(title, type, release);
     }
 
+    /**
+     * Creates a video game instance by reading the necessary data from the provided result set.
+     * @param rset the result set to read the data from
+     * @throws SQLException if the result set does not provide the required data
+     * @throws IllegalArgumentException if the provided result set does not have the necessary columns with their
+     *                                  respective types
+     *                                  or if the video game title contained in the result set is blank
+     * @throws NullPointerException if the argument is null
+     */
     public VideoGame createInstance(ResultSet rset) throws SQLException {
         return new VideoGame(rset);
     }
 
+    /**
+     * Gets an existing or creates a new video game type instance. The path determines its place in the type hierarchy,
+     * the last segment of the path is the actual type name. The separator for path segments can be accessed via
+     * {@value #PATH_SEPARATOR}. There will always be a root type instance as a root of the hierarchy (it should not be
+     * a segment of the path). Its name can be accessed via {@value #ROOT_TYPE_NAME}.
+     * @param typePath the type path that describes the desired place in the type hierarchy for the type instance to get
+     * @return the desired video game type instance
+     * @throws NullPointerException if the given type path is null
+     */
     public VideoGameType getVideoGameType(String typePath) {
         Assertions.checkNotNull(typePath, "The entered type path must not be null");
 
@@ -74,6 +103,13 @@ public class VideoGameManager {
         return currentType;
     }
 
+    /**
+     * Creates a path string from a given video game type instance which describes its place in the type hierarchy.
+     * Can be used to store the type information in a database for example.
+     * @param type the video game type instance to get its path for
+     * @return the path of the given type
+     * @throws NullPointerException if the given video game type is null
+     */
     public String getPathString(VideoGameType type) {
         Assertions.checkNotNull(type, "The entered type object must not be null");
 
