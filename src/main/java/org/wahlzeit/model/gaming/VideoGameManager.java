@@ -40,11 +40,11 @@ public class VideoGameManager {
         return getVideoGameType(typeNames);
     }
 
-    public String[] getTypeNames(String pathString) {
+    private String[] getTypeNames(String pathString) {
         return pathString.split(PATH_SEPARATOR);
     }
 
-    public VideoGameType getVideoGameType(String[] typePath) {
+    private VideoGameType getVideoGameType(String[] typePath) {
         VideoGameType currentType = rootType;
         for (int typePathIndex = 0; typePathIndex < typePath.length; ++typePathIndex) {
             String currentSubTypeName = typePath[typePathIndex];
