@@ -56,7 +56,11 @@ public class VideoGame {
         Assertions.checkStringArgumentIsNotBlank(this.title, "The video game title must not be blank");
 
         String typePath = rset.getString("game_type");
-        this.type = VideoGameManager.getInstance().getVideoGameType(typePath);
+        if (typePath == null) {
+            this.type = null;
+        } else {
+            this.type = VideoGameManager.getInstance().getVideoGameType(typePath);
+        }
 
         this.release = rset.getDate("game_release");
     }
