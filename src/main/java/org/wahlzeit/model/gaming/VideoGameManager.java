@@ -1,5 +1,7 @@
 package org.wahlzeit.model.gaming;
 
+import org.wahlzeit.utils.Assertions;
+
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -36,6 +38,8 @@ public class VideoGameManager {
     }
 
     public VideoGameType getVideoGameType(String typePath) {
+        Assertions.checkNotNull(typePath, "The entered type path must not be null");
+
         String[] typeNames = getTypeNames(typePath);
         return getVideoGameType(typeNames);
     }
@@ -71,6 +75,8 @@ public class VideoGameManager {
     }
 
     public String getPathString(VideoGameType type) {
+        Assertions.checkNotNull(type, "The entered type object must not be null");
+
         StringBuilder stringBuilder = new StringBuilder();
 
         for(VideoGameType currentType = type; currentType != rootType; currentType = currentType.getSuperType()) {
