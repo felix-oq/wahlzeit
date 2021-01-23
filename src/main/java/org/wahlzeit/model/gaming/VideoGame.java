@@ -29,7 +29,7 @@ public class VideoGame {
         Assertions.checkNotNull(title, "The video game title must not be null");
         Assertions.checkStringArgumentIsNotBlank(title, "The video game title must not be blank");
 
-        Assertions.checkNotNull(type, "The video game genre must not be null");
+        Assertions.checkNotNull(type, "The video game type must not be null");
 
         Assertions.checkNotNull(release, "The video game release date must not be null");
 
@@ -83,7 +83,7 @@ public class VideoGame {
 
     private void assertResultSetHasVideoGameColumns(ResultSet rset) throws SQLException {
         Assertions.checkResultSetArgumentHasColumnAndType(rset, "game_title", Types.VARCHAR);
-        Assertions.checkResultSetArgumentHasColumnAndType(rset, "game_genre", Types.INTEGER);
+        Assertions.checkResultSetArgumentHasColumnAndType(rset, "game_type", Types.VARCHAR);
         Assertions.checkResultSetArgumentHasColumnAndType(rset, "game_release", Types.DATE);
     }
 
@@ -93,7 +93,7 @@ public class VideoGame {
         if (o == null || getClass() != o.getClass()) return false;
         VideoGame videoGame = (VideoGame) o;
         return Objects.equals(title, videoGame.title) &&
-                type == videoGame.type &&
+                Objects.equals(type, videoGame.type) &&
                 Objects.equals(release, videoGame.release);
     }
 
