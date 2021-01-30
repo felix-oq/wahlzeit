@@ -31,54 +31,6 @@ public class VideoGameTest {
     }
 
     @Test(expected = SQLException.class)
-    public void testResultSetConstructorThrowsSQLException() throws SQLException {
-        // given
-        ResultSet mockedResultSet = mock(ResultSet.class);
-        when(mockedResultSet.getString(anyString())).thenThrow(new SQLException());
-        when(mockedResultSet.getInt(anyString())).thenThrow(new SQLException());
-        when(mockedResultSet.getDate(anyString())).thenThrow(new SQLException());
-
-        ResultSetMetaData mockedMetaData = ResultSetMockingUtils.createValidResultSetMetaDataMock();
-        when(mockedResultSet.getMetaData()).thenReturn(mockedMetaData);
-
-        // when
-        new VideoGame(mockedResultSet);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testResultSetConstructorThrowsIllegalArgumentExceptionWhenDatabaseHasInvalidSchema() throws SQLException {
-        // given
-        ResultSet mockedResultSet = mock(ResultSet.class);
-
-        ResultSetMetaData mockedMetaData = ResultSetMockingUtils.createInvalidResultSetMetaDataMock();
-        when(mockedResultSet.getMetaData()).thenReturn(mockedMetaData);
-
-        // when
-        new VideoGame(mockedResultSet);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testResultSetConstructorThrowsIllegalArgumentExceptionWhenTitleIsBlank() throws SQLException {
-        // given
-        ResultSet mockedResultSet = mock(ResultSet.class);
-        when(mockedResultSet.getString(anyString())).thenReturn("  \t ");
-        when(mockedResultSet.getInt(anyString())).thenReturn(0);
-        when(mockedResultSet.getDate(anyString())).thenReturn(new Date(0L));
-
-        ResultSetMetaData mockedMetaData = ResultSetMockingUtils.createValidResultSetMetaDataMock();
-        when(mockedResultSet.getMetaData()).thenReturn(mockedMetaData);
-
-        // when
-        new VideoGame(mockedResultSet);
-    }
-
-    @Test(expected = NullPointerException.class)
-    public void testResultSetConstructorThrowsNullPointerException() throws SQLException {
-        // when
-        new VideoGame(null);
-    }
-
-    @Test(expected = SQLException.class)
     public void testWriteOnThrowsSQLException() throws SQLException {
         /// given
         ResultSet mockedResultSet = mock(ResultSet.class);
