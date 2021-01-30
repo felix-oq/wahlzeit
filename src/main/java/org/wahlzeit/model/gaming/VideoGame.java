@@ -39,33 +39,6 @@ public class VideoGame {
     }
 
     /**
-     * Constructor that reads the necessary data from the provided result set.
-     * @param rset the result set to read the data from
-     * @throws SQLException if the result set does not provide the required data
-     * @throws IllegalArgumentException if the provided result set does not have the necessary columns with their
-     *                                  respective types
-     *                                  or if the video game title contained in the result set is blank
-     * @throws NullPointerException if the argument is null
-     */
-    public VideoGame(ResultSet rset) throws SQLException {
-        Assertions.checkNotNull(rset, "The result set must not be null");
-        assertResultSetHasVideoGameColumns(rset);
-
-        this.title = rset.getString("game_title");
-
-        Assertions.checkStringArgumentIsNotBlank(this.title, "The video game title must not be blank");
-
-        String typePath = rset.getString("game_type");
-        if (typePath == null) {
-            this.type = null;
-        } else {
-            this.type = VideoGameManager.getInstance().getVideoGameType(typePath);
-        }
-
-        this.release = rset.getDate("game_release");
-    }
-
-    /**
      * Writes the contents of this video game on the provided result set.
      * @param rset the result set to write the values on
      * @throws SQLException if the necessary values cannot be written on the provided result set
@@ -85,7 +58,7 @@ public class VideoGame {
         rset.updateDate("game_release", release);
     }
 
-    private void assertResultSetHasVideoGameColumns(ResultSet rset) throws SQLException {
+    static void assertResultSetHasVideoGameColumns(ResultSet rset) throws SQLException {
         Assertions.checkResultSetArgumentHasColumnAndType(rset, "game_title", Types.VARCHAR);
         Assertions.checkResultSetArgumentHasColumnAndType(rset, "game_type", Types.VARCHAR);
         Assertions.checkResultSetArgumentHasColumnAndType(rset, "game_release", Types.DATE);

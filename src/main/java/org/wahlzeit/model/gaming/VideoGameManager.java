@@ -54,7 +54,16 @@ public class VideoGameManager {
      * @throws NullPointerException if the argument is null
      */
     public VideoGame createInstance(ResultSet rset) throws SQLException {
-        return new VideoGame(rset);
+        Assertions.checkNotNull(rset, "The result set must not be null");
+        VideoGame.assertResultSetHasVideoGameColumns(rset);
+
+        String title = rset.getString("game_title");
+        Assertions.checkStringArgumentIsNotBlank(title, "The video game title must not be blank");
+
+        String typePath = rset.getString("game_type");
+        Date release = rset.getDate("game_release");
+
+        return createInstance(title, typePath, release);
     }
 
     /**
