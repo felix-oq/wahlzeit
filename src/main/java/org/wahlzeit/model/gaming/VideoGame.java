@@ -13,6 +13,25 @@ import java.util.Objects;
  */
 public class VideoGame {
 
+    /*
+     * Documentation of the object creation process of this class.
+     *
+     *
+     * Sequence of method calls that leads to a new instance:
+     * 1. VideoGameManager::getInstance         (retrieve the singleton instance)
+     * 2. VideoGameManager::createInstance      (initiate the VideoGame creation)
+     * 3. VideoGameManager::getVideoGameType    (retrieve/create the type object for the demanded VideoGame instance)
+     * 4. VideoGame::VideoGame                  (VideoGameManager creates a VideoGame object using the constructor of that class)
+     *
+     * Point in the object creation solution space:
+     * 1. Delegation:       separate-object     (the VideoGameManager class)
+     * 2. Selection:        on-the-spot         (createInstance-method always creates VideoGame instances)
+     * 3. Configuration:    in-code             (no mapping necessary because selection is trivial)
+     * 4. Instantiation:    in-code             (createInstance-method calls VideoGame constructor)
+     * 5. Initialization:   by-fixed-signature  (parameters for the VideoGame constructor can be inferred from the arguments of the createInstance-method)
+     * 6. Building:         default             (the complex VideoGameType hierarchy is passed as an argument to the VideoGame constructor)
+     */
+
     private final String title;
     private final VideoGameType type;
     private final Date release;

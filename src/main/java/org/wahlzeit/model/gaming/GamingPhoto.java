@@ -12,6 +12,26 @@ import java.sql.SQLException;
  */
 public class GamingPhoto extends Photo {
 
+    /*
+     * Documentation of the object creation process of this class.
+     *
+     *
+     * Sequence of method calls that leads to a new instance:
+     * 1. GamingPhotoManager::createObject  (ask the manager to create a new object)
+     * 2. PhotoManager::createObject        (GamingPhotoManager calls createObject-method of superclass)
+     * 3. GamingPhotoFactory::createPhoto   (PhotoManager calls createPhoto of the GamingPhotoFactory)
+     * 4. GamingPhoto::GamingPhoto          (GamingPhotoFactory creates a GamingPhoto object using the constructor of that class)
+     * 5. Photo::Photo                      (GamingPhoto calls constructor of superclass)
+     *
+     * Point in the object creation solution space:
+     * 1. Delegation:       separate-object     (the GamingPhotoManager class)
+     * 2. Selection:        by-colocating       (the GamingPhotoFactory is called to create the specific type of photo)
+     * 3. Configuration:    in-code             (the usage of the GamingPhotoFactory class as factory is hard-coded in PhotoFactory::getInstance)
+     * 4. Instantiation:    in-code             (createPhoto-method calls GamingPhoto constructor)
+     * 5. Initialization:   by-fixed-signature  (parameters for the GamingPhoto constructor can be inferred from the arguments of the createPhoto-method)
+     * 6. Building:         default             (no complex building required)
+     */
+
     /**
      * The video game of which this image is taken from.
      */
